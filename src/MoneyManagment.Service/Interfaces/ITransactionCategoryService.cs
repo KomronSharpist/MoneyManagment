@@ -6,7 +6,7 @@ namespace MoneyManagment.Service.Interfaces;
 public interface ITransactionCategoryService
 {
     ValueTask<bool> AddAsync(TransactionCategoryCreationDto dto);
-    ValueTask<bool> UpdateAsync(TransactionCategoryCreationDto dto);
+    ValueTask<bool> UpdateAsync(TransactionCategoryCreationDto dto, long id);
     ValueTask<bool> DeleteAsync(long id);
     ValueTask<TransactionCategoryResultDto> RetrieveByIdAsync(long id);
     ValueTask<List<TransactionCategoryResultDto>> RetrieveAllAsync(PaginationParams @params);

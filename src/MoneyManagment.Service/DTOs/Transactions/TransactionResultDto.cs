@@ -10,4 +10,5 @@ public class TransactionResultDto
     public decimal Sum { get; set; }
     public string Description { get; set; }
     public long UserId { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow.ToUniversalTime();
 }

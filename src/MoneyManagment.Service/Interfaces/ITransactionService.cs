@@ -9,7 +9,6 @@ public interface ITransactionService
     ValueTask<bool> UpdateAsync(TransactionUpdateDto dto);
     ValueTask<bool> DeleteAsync(long id);
     ValueTask<TransactionResultDto> RetrieveByIdAsync(long id);
-    ValueTask<TransactionResultDto> RetrieveByMeAsync();
     ValueTask<TransactionTotalResultDto> RetrieveMothlyByUserIdAsync(PaginationParams @params, long id);
     ValueTask<TransactionTotalResultDto> RetrieveMothlyByMeAsync(PaginationParams @params);
     ValueTask<TransactionTotalResultDto> RetrieveAllByMeAsync(PaginationParams @params);

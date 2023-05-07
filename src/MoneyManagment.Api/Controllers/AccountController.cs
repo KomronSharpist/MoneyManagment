@@ -26,7 +26,7 @@ public class AccountController : BaseController
          });
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(UserCreationDto dto)
+    public async Task<IActionResult> Register([FromForm] UserCreationDto dto)
     => Ok(new
     {
         Code = 200,

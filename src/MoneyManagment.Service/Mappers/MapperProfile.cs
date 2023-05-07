@@ -15,9 +15,13 @@ public class MapperProfile : Profile
         CreateMap<UserCreationDto, User>().ReverseMap();
 
         CreateMap<Transaction, TransactionResultDto>().ReverseMap();
+        CreateMap<Transaction, TransactionCreationDto>().ReverseMap();
+        CreateMap<Transaction, TransactionUpdateDto>().ReverseMap();
+        CreateMap<TransactionResultDto, TransactionUpdateDto>().ReverseMap();
         CreateMap<TransactionResultDto, TransactionCreationDto>().ReverseMap();
 
         CreateMap<TransactionCategory, TransactionCategoryResultDto>().ReverseMap();
+        CreateMap<TransactionCategory, TransactionCategoryCreationDto>().ReverseMap();
         CreateMap<TransactionCategoryResultDto, TransactionCategoryCreationDto>().ReverseMap();
     }
 }

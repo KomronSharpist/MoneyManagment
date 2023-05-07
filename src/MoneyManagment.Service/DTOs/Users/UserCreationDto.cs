@@ -1,4 +1,5 @@
-﻿using MoneyManagment.Service.Commons.Attributes;
+﻿using Microsoft.AspNetCore.Http;
+using MoneyManagment.Service.Commons.Attributes;
 using System.ComponentModel.DataAnnotations;
 
 namespace MoneyManagment.Service.DTOs.Users;
@@ -11,8 +12,8 @@ public class UserCreationDto
     public string LastName { get; set; }
     [Email]
     public string Email { get; set; }
-    [Required]
-    public string ImagePath { get; set; }
+    public IFormFile ImagePath { get; set; }
+
     [StrongPassword]
     public string Password { get; set; }
 }

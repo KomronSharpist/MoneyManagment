@@ -8,6 +8,7 @@ using MoneyManagment.Service.Exceptions;
 using MoneyManagment.Service.Extensions;
 using MoneyManagment.Service.Helpers;
 using MoneyManagment.Service.Interfaces;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MoneyManagment.Service.Services;
 
@@ -30,28 +31,69 @@ public class UserService : IUserService
         if (exist is not null)
             throw new MoneyException(405, "User is already exist");
 
+
         if (exist is not null && exist.IsDeleted && PasswordHelper.Verify(dto.Password, exist.Salt, exist.Password))
         {
-            var mappedDto = this.mapper.Map(dto, exist);
             var hash = PasswordHelper.Hash(exist.Password);
             exist.IsDeleted = false;
             exist.UpdatedAt = DateTime.UtcNow;
             exist.UpdatedBy = HttpContextHelper.UserId;
             exist.Password = hash.passwordHash;
             exist.Salt = hash.salt;
+            var mappedDto = this.mapper.Map(dto, exist);
+            if (dto.ImagePath is null)
+                mappedDto.ImagePath = exist.ImagePath;
+            else
+            {
+                byte[] image = dto.ImagePath.ToByteArray();
+                var fileExtension = Path.GetExtension(dto.ImagePath.FileName);
+                var fileName = Guid.NewGuid().ToString("N") + fileExtension;
+                var webRootPath = EnvironmentHelper.WebHostPath;
+                var folder = Path.Combine("wwwroot", "uploads", "images");
+
+                if (!Directory.Exists(folder))
+                    Directory.CreateDirectory(folder);
+
+                var fullPath = Path.Combine(folder, fileName);
+                using var imageStream = new MemoryStream(image);
+
+                using var imagePath = new FileStream(fullPath, FileMode.CreateNew);
+                imageStream.WriteTo(imagePath);
+
+                mappedDto.ImagePath = fullPath;
+            }
+                
             await this.unitOfWork.SaveChangesAsync();
             return true;
         }
+
+        byte[] image2 = dto.ImagePath.ToByteArray();
+        var fileExtension2 = Path.GetExtension(dto.ImagePath.FileName);
+        var fileName2 = Guid.NewGuid().ToString("N") + fileExtension2;
+        var webRootPath2 = EnvironmentHelper.WebHostPath;
+        var folder2 = Path.Combine("wwwroot", "uploads", "images");
+
+        if (!Directory.Exists(folder2))
+            Directory.CreateDirectory(folder2);
+
+        var fullPath2 = Path.Combine(folder2, fileName2);
+        using var imageStream2 = new MemoryStream(image2);
+
+        using var imagePath2 = new FileStream(fullPath2, FileMode.CreateNew);
+        imageStream2.WriteTo(imagePath2);
+
 
         var newDto = this.mapper.Map<User>(dto);
         var newHash = PasswordHelper.Hash(dto.Password);
         newDto.Password = newHash.passwordHash;
         newDto.Salt = newHash.salt;
+        newDto.ImagePath = fullPath2;
         await this.unitOfWork.Users.InsertAsync(newDto);
         await this.unitOfWork.SaveChangesAsync();
 
         return true;
     }
+
 
     public async ValueTask<bool> ChangePasswordAsync(UserChangePasswordDto dto)
     {
@@ -95,16 +137,18 @@ public class UserService : IUserService
             .ToPagedList(@params)
             .ToListAsync();
 
-        return this.mapper.Map<List<UserResultDto>>(user);
+        var mappedDto = this.mapper.Map<List<UserResultDto>>(user);
+        return mappedDto;
     }
 
     public async ValueTask<UserResultDto> RetrieveByEmailAsync(string email)
     {
         var user = await this.unitOfWork.Users.SelectAsync(u => u.Email.Equals(email));
         if (user is null || user.IsDeleted)
-            throw new MoneyException(404, "User is not found");
+            throw new MoneyException(400, "Email or password is incorrect");
 
-        return this.mapper.Map<UserResultDto>(user);
+        var mappedDto = this.mapper.Map<UserResultDto>(user);
+        return mappedDto;
     }
 
     public async ValueTask<UserResultDto> RetrieveByIdAsync(long id)
@@ -120,7 +164,7 @@ public class UserService : IUserService
     {
         var user = await this.unitOfWork.Users.SelectAsync(u => u.Id.Equals(HttpContextHelper.UserId));
         if (user is null || user.IsDeleted)
-            throw new MoneyException(404, "User is not found");
+            throw new MoneyException(401, "Unauthorized");
 
         return this.mapper.Map<UserResultDto>(user);
     }
@@ -129,11 +173,18 @@ public class UserService : IUserService
     {
         var exist = await this.unitOfWork.Users.SelectAsync(u => u.Email.Equals(dto.Email));
         if (exist is null || exist.IsDeleted)
-            throw new MoneyException(404, "User is not found");
+            throw new MoneyException(404, "User is not found with this email");
 
+        if (!PasswordHelper.Verify(dto.Password, exist.Salt, exist.Password))
+            throw new MoneyException(401, "Your password is wrong for update your profile");
+
+        var newPass = PasswordHelper.Hash(dto.Password);
+        exist.Password = newPass.passwordHash;
+        exist.Salt = newPass.salt;
         exist.UpdatedAt = DateTime.UtcNow;
         exist.UpdatedBy = HttpContextHelper.UserId;
         this.mapper.Map(dto, exist);
+
         await this.unitOfWork.SaveChangesAsync();
 
         return this.mapper.Map<UserResultDto>(exist);
