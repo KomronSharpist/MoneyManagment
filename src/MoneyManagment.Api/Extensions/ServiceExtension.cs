@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using MoneyManagment.DAL.Contexts;
 using MoneyManagment.DAL.IRepositories;
 using MoneyManagment.DAL.Repositories;
+using MoneyManagment.Service.Helpers;
 using MoneyManagment.Service.Interfaces;
 using MoneyManagment.Service.Services;
 using System.Reflection;
@@ -14,7 +15,6 @@ namespace MoneyManagment.Api.Extensions;
 
 public static class ServiceExtensions
 {
-    #region Service Registration
     public static void AddCustomServices(this IServiceCollection services)
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -23,33 +23,9 @@ public static class ServiceExtensions
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ITransactionService, TransactionService>();
         services.AddScoped<ITransactionCategoryService, TransactionCategoryService>();
-    }
-    public static void AddJwtService(this IServiceCollection services, IConfiguration configuration)
-    {
 
-        services.AddAuthentication(x =>
-        {
-            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(o =>
-        {
-            var Key = Encoding.UTF8.GetBytes(configuration["JWT:Key"]);
-            o.SaveToken = true;
-            o.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = configuration["JWT:Issuer"],
-                ValidAudience = configuration["JWT:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Key)
-            };
-        });
     }
-    #endregion
 
-    #region Setup Swagger
     public static void AddSwaggerService(this IServiceCollection services)
     {
         services.AddSwaggerGen(c =>
@@ -82,5 +58,4 @@ public static class ServiceExtensions
         });
         });
     }
-    #endregion
 }

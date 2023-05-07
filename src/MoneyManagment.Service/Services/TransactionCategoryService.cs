@@ -67,9 +67,9 @@ namespace MoneyManagment.Service.Services
             return this.mapper.Map<TransactionCategoryResultDto>(category);
         }
 
-        public async ValueTask<bool> UpdateAsync(TransactionCategoryCreationDto dto)
+        public async ValueTask<bool> UpdateAsync(TransactionCategoryCreationDto dto ,long id)
         {
-            var category = await this.unitOfWork.TransactionCategories.SelectAsync(c => c.Name.Equals(dto.Name));
+            var category = await this.unitOfWork.TransactionCategories.SelectAsync(c => c.Id.Equals(id));
             if (category is null || category.IsDeleted)
                 throw new MoneyException(404, "Category is not found");
 

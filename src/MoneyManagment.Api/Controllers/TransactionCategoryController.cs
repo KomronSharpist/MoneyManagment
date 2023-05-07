@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MoneyManagment.Domain.Configurations;
 using MoneyManagment.Service.DTOs.TransactionCategory;
 using MoneyManagment.Service.Interfaces;
@@ -16,6 +17,7 @@ public class TransactionCategoryController : BaseController
     // Create, Update, Delete, RetrieveById , Retrieve ALl
 
     [HttpPost("create")]
+    [Authorize("admin")]
     public async Task<IActionResult> Post(TransactionCategoryCreationDto dto)
         => Ok(new
         {
@@ -25,15 +27,17 @@ public class TransactionCategoryController : BaseController
         });
 
     [HttpPut("update")]
-    public async Task<IActionResult> Put(TransactionCategoryCreationDto dto)
+    [Authorize("admin")]
+    public async Task<IActionResult> Put([FromBody] TransactionCategoryCreationDto dto, long id)
         => Ok(new
         {
             Code = 200,
             Error = "Success",
-            Data = await this.transactionCategoryService.UpdateAsync(dto)
+            Data = await this.transactionCategoryService.UpdateAsync(dto,id)
         });
 
     [HttpDelete("delete/{id:long}")]
+    [Authorize("admin")]
     public async Task<IActionResult> Delete(long id)
         => Ok(new
         {
@@ -43,6 +47,7 @@ public class TransactionCategoryController : BaseController
         });
 
     [HttpGet("get-by-id/{id:long}")]
+    [Authorize("allow")]
     public async Task<IActionResult> GetById(long id)
         => Ok(new
         {
@@ -52,7 +57,8 @@ public class TransactionCategoryController : BaseController
         });
 
     [HttpGet("get-list")]
-    public async Task<IActionResult> GetAll([FromBody] PaginationParams @params)
+    [Authorize("allow")]
+    public async Task<IActionResult> GetAll([FromQuery] PaginationParams @params)
        => Ok(new
        {
            Code = 200,

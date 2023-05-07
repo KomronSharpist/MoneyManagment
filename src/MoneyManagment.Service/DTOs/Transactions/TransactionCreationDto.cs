@@ -13,4 +13,6 @@ public class TransactionCreationDto
     public decimal Sum { get; set; }
     [Required]
     public string Description { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow.ToUniversalTime();
+
 }

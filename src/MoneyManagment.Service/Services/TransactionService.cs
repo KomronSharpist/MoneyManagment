@@ -24,6 +24,8 @@ public class TransactionService : ITransactionService
     public async ValueTask<bool> AddAsync(TransactionCreationDto dto)
     {
         var mappedDto = this.mapper.Map<Transaction>(dto);
+        mappedDto.UserId = HttpContextHelper.UserId;
+        mappedDto.TransactionCategoryId = dto.CategoryId;
         await this.unitOfWork.Transactions.InsertAsync(mappedDto);
         await this.unitOfWork.SaveChangesAsync();
 
@@ -61,7 +63,6 @@ public class TransactionService : ITransactionService
             .ToListAsync();
 
         var newDto = new TransactionTotalResultDto();
-        newDto.UserId = HttpContextHelper.UserId;
         foreach (var item in transaction)
         {
             if (item.TransactionType == Domain.Enums.TransactionType.income)
@@ -88,7 +89,6 @@ public class TransactionService : ITransactionService
             .ToListAsync();
 
         var newDto = new TransactionTotalResultDto();
-        newDto.UserId = id;
         foreach (var item in transaction)
         {
             if (item.TransactionType == Domain.Enums.TransactionType.income)
@@ -116,14 +116,6 @@ public class TransactionService : ITransactionService
         return this.mapper.Map<TransactionResultDto>(category);
     }
 
-    public async ValueTask<TransactionResultDto> RetrieveByMeAsync()
-    {
-        var category = await this.unitOfWork.Transactions.SelectAsync(t => t.Id.Equals(HttpContextHelper.UserId));
-        if (category is null || category.IsDeleted)
-            throw new MoneyException(404, "Categroy is not found");
-
-        return this.mapper.Map<TransactionResultDto>(category);
-    }
 
     public async ValueTask<TransactionTotalResultDto> RetrieveMothlyByMeAsync(PaginationParams @params)
     {
@@ -135,7 +127,6 @@ public class TransactionService : ITransactionService
            .ToListAsync();
 
         var newDto = new TransactionTotalResultDto();
-        newDto.UserId = HttpContextHelper.UserId;
         foreach (var item in transaction)
         {
             if (item.TransactionType == Domain.Enums.TransactionType.income)
@@ -164,7 +155,6 @@ public class TransactionService : ITransactionService
            .ToListAsync();
 
         var newDto = new TransactionTotalResultDto();
-        newDto.UserId = HttpContextHelper.UserId;
         foreach (var item in transaction)
         {
             if (item.TransactionType == Domain.Enums.TransactionType.income)

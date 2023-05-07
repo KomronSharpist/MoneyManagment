@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManagment.Domain.Configurations;
@@ -16,7 +17,8 @@ public class UserController : BaseController
     }
 
     [HttpPut("update")]
-    public async Task<IActionResult> Put(UserCreationDto dto)
+    [Authorize("allow")]
+    public async Task<IActionResult> Put([FromForm] UserCreationDto dto)
         => Ok(new
         {
             Code = 200,
@@ -24,7 +26,17 @@ public class UserController : BaseController
             Data = await this.userService.UpdateAsync(dto)
         });
 
+    //[HttpPost("image-upload")]
+    //public async ValueTask<IActionResult> UploadImage([FromForm] UserImageCreationDto dto)
+    //  => Ok(new
+    //  {
+    //      Code = 200,
+    //      Error = "Success",
+    //      Data = await this.userService.ImageUploadAsync(dto)
+    //  });
+
     [HttpPut("change-password")]
+    [Authorize("allow")]
     public async Task<IActionResult> ChangePassword(UserChangePasswordDto dto)
         => Ok(new
         {
@@ -34,6 +46,7 @@ public class UserController : BaseController
         });
 
     [HttpDelete("delete/{id:long}")]
+    [Authorize("allow")]
     public async Task<IActionResult> Delete(long id)
         => Ok(new
         {
@@ -43,6 +56,7 @@ public class UserController : BaseController
         });
 
     [HttpGet("get-by-id/{id:long}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetByIdAsync(long id)
         => Ok(new
         {
@@ -52,6 +66,7 @@ public class UserController : BaseController
         });
 
     [HttpGet("get-by-email/{email}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetByEmailAsync(string email)
        => Ok(new
        {
@@ -61,6 +76,7 @@ public class UserController : BaseController
        });
 
     [HttpGet("me")]
+    [Authorize("allow")]
     public async Task<IActionResult> GetMe()
         => Ok(new
         {
@@ -69,12 +85,13 @@ public class UserController : BaseController
             Data = await this.userService.RetrieveMeAsync()
         });
 
-    [HttpGet("get-list/{params}")]
-    public async Task<IActionResult> GetAll([FromQuery] PaginationParams @params)
+    [HttpGet("get-list/")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> GetAll([FromQuery] PaginationParams param)
         => Ok(new
         {
             Code = 200,
             Error = "Success",
-            Data = await this.userService.RetrieveAllAsync(@params)
+            Data = await this.userService.RetrieveAllAsync(param)
         });
 }
