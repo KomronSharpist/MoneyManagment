@@ -19,11 +19,11 @@ public class TransactionController : BaseController
     [Authorize("allow")]
     public async Task<IActionResult> Post(TransactionCreationDto dto)
         => Ok(new
-            {
-                Code = 200,
-                Error = "Success",
-                Data = await this.transactionService.AddAsync(dto)
-            });
+        {
+            Code = 200,
+            Error = "Success",
+            Data = await this.transactionService.AddAsync(dto)
+        });
 
     [HttpPut("update")]
     [Authorize("allow")]
@@ -55,7 +55,6 @@ public class TransactionController : BaseController
             Data = await this.transactionService.RetrieveByIdAsync(id)
         });
 
-  
     [HttpGet("get-list")]
     [Authorize("admin")]
     public async Task<IActionResult> GetAll([FromQuery] PaginationParams @params)
@@ -68,12 +67,12 @@ public class TransactionController : BaseController
 
     [HttpGet("get-list-by-id")]
     [Authorize("admin")]
-    public async Task<IActionResult> GetAllById([FromQuery] PaginationParams @params,long id)
+    public async Task<IActionResult> GetAllById([FromQuery] PaginationParams @params, long id)
         => Ok(new
         {
             Code = 200,
             Error = "Success",
-            Data = await this.transactionService.RetrieveAllByUserIdAsync(@params,id)
+            Data = await this.transactionService.RetrieveAllByUserIdAsync(@params, id)
         });
 
     [HttpGet("get-list-by-me")]
@@ -103,6 +102,6 @@ public class TransactionController : BaseController
        {
            Code = 200,
            Error = "Success",
-           Data = await this.transactionService.RetrieveMothlyByUserIdAsync(@params,id)
+           Data = await this.transactionService.RetrieveMothlyByUserIdAsync(@params, id)
        });
 }

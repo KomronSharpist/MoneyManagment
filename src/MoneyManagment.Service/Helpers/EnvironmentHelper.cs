@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting.Internal;
-
-namespace MoneyManagment.Service.Helpers;
+﻿namespace MoneyManagment.Service.Helpers;
 
 
 public class EnvironmentHelper

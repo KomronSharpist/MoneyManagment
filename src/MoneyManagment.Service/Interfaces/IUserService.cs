@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using MoneyManagment.Domain.Configurations;
+﻿using MoneyManagment.Domain.Configurations;
 using MoneyManagment.Service.DTOs.Users;
 
 namespace MoneyManagment.Service.Interfaces;
