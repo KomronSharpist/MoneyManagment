@@ -12,7 +12,7 @@ public class UserCreationDto
     public string LastName { get; set; }
     [Email]
     public string Email { get; set; }
-    public IFormFile ImagePath { get; set; }
+    public IFormFile Image { get; set; }
 
     [StrongPassword]
     public string Password { get; set; }

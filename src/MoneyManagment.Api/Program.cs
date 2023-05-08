@@ -1,18 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MoneyManagment.Api.Extensions;
-using MoneyManagment.Api.Helpers;
 using MoneyManagment.Api.Middlewares;
 using MoneyManagment.Api.Models;
 using MoneyManagment.DAL.Contexts;
-using MoneyManagment.Service.Helpers;
 using MoneyManagment.Service.Mappers;
 using Serilog;
-using System;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

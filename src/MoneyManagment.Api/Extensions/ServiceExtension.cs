@@ -1,15 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using MoneyManagment.DAL.Contexts;
+﻿using Microsoft.OpenApi.Models;
 using MoneyManagment.DAL.IRepositories;
 using MoneyManagment.DAL.Repositories;
-using MoneyManagment.Service.Helpers;
 using MoneyManagment.Service.Interfaces;
 using MoneyManagment.Service.Services;
 using System.Reflection;
-using System.Text;
 
 namespace MoneyManagment.Api.Extensions;
 

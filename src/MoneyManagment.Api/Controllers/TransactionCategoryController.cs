@@ -33,7 +33,7 @@ public class TransactionCategoryController : BaseController
         {
             Code = 200,
             Error = "Success",
-            Data = await this.transactionCategoryService.UpdateAsync(dto,id)
+            Data = await this.transactionCategoryService.UpdateAsync(dto, id)
         });
 
     [HttpDelete("delete/{id:long}")]

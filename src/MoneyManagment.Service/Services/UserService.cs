@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using MoneyManagment.DAL.IRepositories;
 using MoneyManagment.Domain.Configurations;
 using MoneyManagment.Domain.Entities;
+using MoneyManagment.Domain.Enums;
 using MoneyManagment.Service.DTOs.Users;
 using MoneyManagment.Service.Exceptions;
 using MoneyManagment.Service.Extensions;
 using MoneyManagment.Service.Helpers;
 using MoneyManagment.Service.Interfaces;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace MoneyManagment.Service.Services;
 
@@ -41,12 +41,12 @@ public class UserService : IUserService
             exist.Password = hash.passwordHash;
             exist.Salt = hash.salt;
             var mappedDto = this.mapper.Map(dto, exist);
-            if (dto.ImagePath is null)
+            if (dto.Image is null)
                 mappedDto.ImagePath = exist.ImagePath;
             else
             {
-                byte[] image = dto.ImagePath.ToByteArray();
-                var fileExtension = Path.GetExtension(dto.ImagePath.FileName);
+                byte[] image = dto.Image.ToByteArray();
+                var fileExtension = Path.GetExtension(dto.Image.FileName);
                 var fileName = Guid.NewGuid().ToString("N") + fileExtension;
                 var webRootPath = EnvironmentHelper.WebHostPath;
                 var folder = Path.Combine("wwwroot", "uploads", "images");
@@ -62,13 +62,13 @@ public class UserService : IUserService
 
                 mappedDto.ImagePath = fullPath;
             }
-                
+
             await this.unitOfWork.SaveChangesAsync();
             return true;
         }
 
-        byte[] image2 = dto.ImagePath.ToByteArray();
-        var fileExtension2 = Path.GetExtension(dto.ImagePath.FileName);
+        byte[] image2 = dto.Image.ToByteArray();
+        var fileExtension2 = Path.GetExtension(dto.Image.FileName);
         var fileName2 = Guid.NewGuid().ToString("N") + fileExtension2;
         var webRootPath2 = EnvironmentHelper.WebHostPath;
         var folder2 = Path.Combine("wwwroot", "uploads", "images");
@@ -119,13 +119,27 @@ public class UserService : IUserService
 
     public async ValueTask<bool> DeleteAsync(long id)
     {
-        var exist = await this.unitOfWork.Users.SelectAsync(u => u.Id.Equals(id));
-        if (exist is null || exist.IsDeleted)
-            throw new MoneyException(400, "User is not found");
+        if (id == 0)
+        {
+            await this.unitOfWork.Users.DeleteAsync(u => u.Id.Equals(HttpContextHelper.UserId));
+            await this.unitOfWork.SaveChangesAsync();
+            return true;
+        }
+        else
+        {
+            var exist = await this.unitOfWork.Users.SelectAsync(u => u.Id.Equals(id));
+            if (exist is null || exist.IsDeleted)
+                throw new MoneyException(400, "User is not found");
 
-        exist.DeletedBy = HttpContextHelper.UserId;
-        await this.unitOfWork.Users.DeleteAsync(u => u.Id.Equals(id));
-        await this.unitOfWork.SaveChangesAsync();
+            if (HttpContextHelper.UserRole == Convert.ToString(Roles.Admin) || exist.Id == HttpContextHelper.UserId)
+            {
+                exist.DeletedBy = HttpContextHelper.UserId;
+                await this.unitOfWork.Users.DeleteAsync(u => u.Id.Equals(id));
+                await this.unitOfWork.SaveChangesAsync();
+            }
+            else
+                throw new MoneyException(403, "You can not delete, you don't have authorize");
+        }
 
         return true;
     }
@@ -147,6 +161,9 @@ public class UserService : IUserService
         if (user is null || user.IsDeleted)
             throw new MoneyException(400, "Email or password is incorrect");
 
+        if (user.Id != HttpContextHelper.UserId && HttpContextHelper.UserRole != Convert.ToString(Roles.Admin))
+            throw new MoneyException(403, "You don't have authorize for this");
+            
         var mappedDto = this.mapper.Map<UserResultDto>(user);
         return mappedDto;
     }

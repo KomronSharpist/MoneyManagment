@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MoneyManagment.DAL.IRepositories;
 using MoneyManagment.Domain.Configurations;
 using MoneyManagment.Domain.Entities;
+using MoneyManagment.Domain.Enums;
 using MoneyManagment.Service.DTOs.Transactions;
 using MoneyManagment.Service.Exceptions;
 using MoneyManagment.Service.Extensions;
@@ -23,6 +24,8 @@ public class TransactionService : ITransactionService
 
     public async ValueTask<bool> AddAsync(TransactionCreationDto dto)
     {
+        if (dto.TransactionType != Domain.Enums.TransactionType.income && dto.TransactionType != Domain.Enums.TransactionType.outgo)
+            throw new MoneyException(400, "Type is wrong: income = 0, outgo = 1");
         var mappedDto = this.mapper.Map<Transaction>(dto);
         mappedDto.UserId = HttpContextHelper.UserId;
         mappedDto.TransactionCategoryId = dto.CategoryId;
@@ -38,8 +41,19 @@ public class TransactionService : ITransactionService
         if (transaction is null || transaction.IsDeleted)
             throw new MoneyException(404, "Transaction is not found");
 
-        transaction.DeletedBy = HttpContextHelper.UserId;
-        await this.unitOfWork.Transactions.DeleteAsync(t => t.Id.Equals(id));
+        if (HttpContextHelper.UserRole == Convert.ToString(Roles.Admin))
+        {
+            transaction.DeletedBy = HttpContextHelper.UserId;
+            await this.unitOfWork.Transactions.DeleteAsync(t => t.Id.Equals(id));
+        }
+        else if (HttpContextHelper.UserRole == Convert.ToString(Roles.User) && transaction.UserId == HttpContextHelper.UserId)
+        {
+            transaction.DeletedBy = HttpContextHelper.UserId;
+            await this.unitOfWork.Transactions.DeleteAsync(t => t.Id.Equals(id));
+        }
+        else
+            throw new MoneyException(403, "You don't have authorize for this");
+
         await this.unitOfWork.SaveChangesAsync();
 
         return true;
@@ -179,10 +193,20 @@ public class TransactionService : ITransactionService
         if (transaction is null || transaction.IsDeleted)
             throw new MoneyException(404, "Transaction is not found");
 
-        var mappedDto = this.mapper.Map(dto, transaction);
-        mappedDto.UpdatedAt = DateTime.UtcNow;
-        mappedDto.UpdatedBy = HttpContextHelper.UserId;
-
+        if (HttpContextHelper.UserRole == Convert.ToString(Roles.Admin))
+        {
+            var mappedDto = this.mapper.Map(dto, transaction);
+            mappedDto.UpdatedAt = DateTime.UtcNow;
+            mappedDto.UpdatedBy = HttpContextHelper.UserId;
+        }
+        else if (HttpContextHelper.UserRole == Convert.ToString(Roles.User) && HttpContextHelper.UserId == transaction.UserId)
+        {
+            var mappedDto = this.mapper.Map(dto, transaction);
+            mappedDto.UpdatedAt = DateTime.UtcNow;
+            mappedDto.UpdatedBy = HttpContextHelper.UserId;
+        }
+        else
+            throw new MoneyException(403, "You don't have authorize for this");
         await this.unitOfWork.SaveChangesAsync();
 
         return true;

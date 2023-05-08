@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MoneyManagment.Domain.Configurations;
 using MoneyManagment.Service.DTOs.Users;
@@ -47,7 +45,7 @@ public class UserController : BaseController
 
     [HttpDelete("delete/{id:long}")]
     [Authorize("allow")]
-    public async Task<IActionResult> Delete(long id)
+    public async Task<IActionResult> Delete(long id = 0)
         => Ok(new
         {
             Code = 200,
