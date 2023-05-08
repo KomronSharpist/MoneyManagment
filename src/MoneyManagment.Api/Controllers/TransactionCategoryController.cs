@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MoneyManagment.Api.Models;
 using MoneyManagment.Domain.Configurations;
 using MoneyManagment.Service.DTOs.TransactionCategory;
 using MoneyManagment.Service.Interfaces;
@@ -19,7 +20,7 @@ public class TransactionCategoryController : BaseController
     [HttpPost]
     [Authorize("admin")]
     public async Task<IActionResult> Post(TransactionCategoryCreationDto dto)
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
@@ -29,7 +30,7 @@ public class TransactionCategoryController : BaseController
     [HttpPut]
     [Authorize("admin")]
     public async Task<IActionResult> Put([FromBody] TransactionCategoryCreationDto dto, long id)
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
@@ -39,7 +40,7 @@ public class TransactionCategoryController : BaseController
     [HttpDelete("{id:long}")]
     [Authorize("admin")]
     public async Task<IActionResult> Delete(long id)
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
@@ -49,7 +50,7 @@ public class TransactionCategoryController : BaseController
     [HttpGet("by-id/{id:long}")]
     [Authorize("allow")]
     public async Task<IActionResult> GetById(long id)
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
@@ -59,7 +60,7 @@ public class TransactionCategoryController : BaseController
     [HttpGet("list")]
     [Authorize("allow")]
     public async Task<IActionResult> GetAll([FromQuery] PaginationParams @params)
-       => Ok(new
+       => Ok(new Response
        {
            Code = 200,
            Error = "Success",

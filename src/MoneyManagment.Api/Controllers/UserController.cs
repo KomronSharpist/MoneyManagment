@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MoneyManagment.Api.Models;
 using MoneyManagment.Domain.Configurations;
 using MoneyManagment.Service.DTOs.Users;
 using MoneyManagment.Service.Interfaces;
@@ -17,7 +18,7 @@ public class UserController : BaseController
     [HttpPut]
     [Authorize("allow")]
     public async Task<IActionResult> Put([FromForm] UserCreationDto dto)
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
@@ -27,7 +28,7 @@ public class UserController : BaseController
     [HttpPut("change-password")]
     [Authorize("allow")]
     public async Task<IActionResult> ChangePassword(UserChangePasswordDto dto)
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
@@ -37,7 +38,7 @@ public class UserController : BaseController
     [HttpDelete("{id:long}")]
     [Authorize("allow")]
     public async Task<IActionResult> Delete(long id = 0)
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
@@ -47,7 +48,7 @@ public class UserController : BaseController
     [HttpGet("by-id/{id:long}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetByIdAsync(long id)
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
@@ -57,7 +58,7 @@ public class UserController : BaseController
     [HttpGet("by-email/{email}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetByEmailAsync(string email)
-       => Ok(new
+       => Ok(new Response
        {
            Code = 200,
            Error = "Success",
@@ -67,7 +68,7 @@ public class UserController : BaseController
     [HttpGet("me")]
     [Authorize("allow")]
     public async Task<IActionResult> GetMe()
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
@@ -77,7 +78,7 @@ public class UserController : BaseController
     [HttpGet("list/")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAll([FromQuery] PaginationParams param)
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
