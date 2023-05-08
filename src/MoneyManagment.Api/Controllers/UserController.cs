@@ -14,7 +14,7 @@ public class UserController : BaseController
         this.userService = userService;
     }
 
-    [HttpPut("update")]
+    [HttpPut]
     [Authorize("allow")]
     public async Task<IActionResult> Put([FromForm] UserCreationDto dto)
         => Ok(new
@@ -23,15 +23,6 @@ public class UserController : BaseController
             Error = "Success",
             Data = await this.userService.UpdateAsync(dto)
         });
-
-    //[HttpPost("image-upload")]
-    //public async ValueTask<IActionResult> UploadImage([FromForm] UserImageCreationDto dto)
-    //  => Ok(new
-    //  {
-    //      Code = 200,
-    //      Error = "Success",
-    //      Data = await this.userService.ImageUploadAsync(dto)
-    //  });
 
     [HttpPut("change-password")]
     [Authorize("allow")]
@@ -43,7 +34,7 @@ public class UserController : BaseController
             Data = await this.userService.ChangePasswordAsync(dto)
         });
 
-    [HttpDelete("delete/{id:long}")]
+    [HttpDelete("{id:long}")]
     [Authorize("allow")]
     public async Task<IActionResult> Delete(long id = 0)
         => Ok(new
@@ -53,7 +44,7 @@ public class UserController : BaseController
             Data = await this.userService.DeleteAsync(id)
         });
 
-    [HttpGet("get-by-id/{id:long}")]
+    [HttpGet("by-id/{id:long}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetByIdAsync(long id)
         => Ok(new
@@ -63,7 +54,7 @@ public class UserController : BaseController
             Data = await this.userService.RetrieveByIdAsync(id)
         });
 
-    [HttpGet("get-by-email/{email}")]
+    [HttpGet("by-email/{email}")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetByEmailAsync(string email)
        => Ok(new
@@ -83,7 +74,7 @@ public class UserController : BaseController
             Data = await this.userService.RetrieveMeAsync()
         });
 
-    [HttpGet("get-list/")]
+    [HttpGet("list/")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAll([FromQuery] PaginationParams param)
         => Ok(new

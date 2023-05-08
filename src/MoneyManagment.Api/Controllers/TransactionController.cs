@@ -15,7 +15,7 @@ public class TransactionController : BaseController
         this.transactionService = transactionService;
     }
 
-    [HttpPost("create")]
+    [HttpPost]
     [Authorize("allow")]
     public async Task<IActionResult> Post(TransactionCreationDto dto)
         => Ok(new
@@ -25,7 +25,7 @@ public class TransactionController : BaseController
             Data = await this.transactionService.AddAsync(dto)
         });
 
-    [HttpPut("update")]
+    [HttpPut]
     [Authorize("allow")]
     public async Task<IActionResult> Put(TransactionUpdateDto dto)
         => Ok(new
@@ -35,7 +35,7 @@ public class TransactionController : BaseController
             Data = await this.transactionService.UpdateAsync(dto)
         });
 
-    [HttpDelete("delete/{id:long}")]
+    [HttpDelete("{id:long}")]
     [Authorize("allow")]
     public async Task<IActionResult> Delete(long id)
        => Ok(new
@@ -45,7 +45,7 @@ public class TransactionController : BaseController
            Data = await this.transactionService.DeleteAsync(id)
        });
 
-    [HttpGet("get-by-id/{id:long}")]
+    [HttpGet("by-id/{id:long}")]
     [Authorize("admin")]
     public async Task<IActionResult> GetById(long id)
         => Ok(new
@@ -55,7 +55,7 @@ public class TransactionController : BaseController
             Data = await this.transactionService.RetrieveByIdAsync(id)
         });
 
-    [HttpGet("get-list")]
+    [HttpGet("list")]
     [Authorize("admin")]
     public async Task<IActionResult> GetAll([FromQuery] PaginationParams @params)
         => Ok(new
@@ -65,7 +65,7 @@ public class TransactionController : BaseController
             Data = await this.transactionService.RetrieveAllAsync(@params)
         });
 
-    [HttpGet("get-list-by-id")]
+    [HttpGet("list-by-id")]
     [Authorize("admin")]
     public async Task<IActionResult> GetAllById([FromQuery] PaginationParams @params, long id)
         => Ok(new
@@ -75,7 +75,7 @@ public class TransactionController : BaseController
             Data = await this.transactionService.RetrieveAllByUserIdAsync(@params, id)
         });
 
-    [HttpGet("get-list-by-me")]
+    [HttpGet("list-by-me")]
     [Authorize("allow")]
     public async Task<IActionResult> GetAllByMe([FromQuery] PaginationParams @params)
         => Ok(new
@@ -85,7 +85,7 @@ public class TransactionController : BaseController
             Data = await this.transactionService.RetrieveAllByMeAsync(@params)
         });
 
-    [HttpGet("get-mothly-by-me")]
+    [HttpGet("monthly-by-me")]
     [Authorize("allow")]
     public async Task<IActionResult> GetMothlyByMe([FromQuery] PaginationParams @params)
         => Ok(new
@@ -95,7 +95,7 @@ public class TransactionController : BaseController
             Data = await this.transactionService.RetrieveMothlyByMeAsync(@params)
         });
 
-    [HttpGet("get-mothly-by-id")]
+    [HttpGet("monthly-by-id")]
     [Authorize("admin")]
     public async Task<IActionResult> GetMothlyById([FromQuery] PaginationParams @params, long id)
        => Ok(new
