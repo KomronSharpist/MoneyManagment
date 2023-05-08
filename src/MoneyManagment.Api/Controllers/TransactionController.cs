@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MoneyManagment.Api.Models;
 using MoneyManagment.Domain.Configurations;
 using MoneyManagment.Service.DTOs.Transactions;
 using MoneyManagment.Service.Interfaces;
@@ -18,7 +19,7 @@ public class TransactionController : BaseController
     [HttpPost]
     [Authorize("allow")]
     public async Task<IActionResult> Post(TransactionCreationDto dto)
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
@@ -28,7 +29,7 @@ public class TransactionController : BaseController
     [HttpPut]
     [Authorize("allow")]
     public async Task<IActionResult> Put(TransactionUpdateDto dto)
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
@@ -38,7 +39,7 @@ public class TransactionController : BaseController
     [HttpDelete("{id:long}")]
     [Authorize("allow")]
     public async Task<IActionResult> Delete(long id)
-       => Ok(new
+       => Ok(new Response
        {
            Code = 200,
            Error = "Success",
@@ -48,7 +49,7 @@ public class TransactionController : BaseController
     [HttpGet("by-id/{id:long}")]
     [Authorize("admin")]
     public async Task<IActionResult> GetById(long id)
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
@@ -58,7 +59,7 @@ public class TransactionController : BaseController
     [HttpGet("list")]
     [Authorize("admin")]
     public async Task<IActionResult> GetAll([FromQuery] PaginationParams @params)
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
@@ -68,7 +69,7 @@ public class TransactionController : BaseController
     [HttpGet("list-by-id")]
     [Authorize("admin")]
     public async Task<IActionResult> GetAllById([FromQuery] PaginationParams @params, long id)
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
@@ -78,7 +79,7 @@ public class TransactionController : BaseController
     [HttpGet("list-by-me")]
     [Authorize("allow")]
     public async Task<IActionResult> GetAllByMe([FromQuery] PaginationParams @params)
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
@@ -88,7 +89,7 @@ public class TransactionController : BaseController
     [HttpGet("monthly-by-me")]
     [Authorize("allow")]
     public async Task<IActionResult> GetMothlyByMe([FromQuery] PaginationParams @params)
-        => Ok(new
+        => Ok(new Response
         {
             Code = 200,
             Error = "Success",
@@ -98,7 +99,7 @@ public class TransactionController : BaseController
     [HttpGet("monthly-by-id")]
     [Authorize("admin")]
     public async Task<IActionResult> GetMothlyById([FromQuery] PaginationParams @params, long id)
-       => Ok(new
+       => Ok(new Response
        {
            Code = 200,
            Error = "Success",

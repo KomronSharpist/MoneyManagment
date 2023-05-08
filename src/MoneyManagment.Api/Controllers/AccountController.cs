@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
+using MoneyManagment.Api.Models;
 using MoneyManagment.Service.DTOs.Users;
 using MoneyManagment.Service.Interfaces;
 
@@ -18,7 +19,7 @@ public class AccountController : BaseController
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(UserLoginDto dto)
-         => Ok(new
+         => Ok(new Response
          {
              Code = 200,
              Error = "Success",
@@ -27,7 +28,7 @@ public class AccountController : BaseController
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromForm] UserCreationDto dto)
-    => Ok(new
+    => Ok(new Response
     {
         Code = 200,
         Error = "Success",

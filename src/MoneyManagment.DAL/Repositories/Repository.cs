@@ -29,26 +29,8 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Auditabl
         return false;
     }
 
-    public bool DeleteMany(Expression<Func<TEntity, bool>> expression)
-    {
-        var entities = dbSet.Where(expression);
-        if (entities.Any())
-        {
-            foreach (var entity in entities)
-                entity.IsDeleted = true;
-
-            return true;
-        }
-
-        return false;
-    }
-
     public async ValueTask<TEntity> InsertAsync(TEntity entity)
-    {
-        EntityEntry<TEntity> entry = await this.dbSet.AddAsync(entity);
-
-        return entry.Entity;
-    }
+        => (await this.dbSet.AddAsync(entity)).Entity;
 
     public async ValueTask SaveAsync()
     {
@@ -74,9 +56,5 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Auditabl
         => await this.SelectAll(expression, includes).FirstOrDefaultAsync();
 
     public TEntity Update(TEntity entity)
-    {
-        EntityEntry<TEntity> entryentity = this.dbContext.Update(entity);
-
-        return entryentity.Entity;
-    }
+        => (this.dbContext.Update(entity)).Entity;
 }
