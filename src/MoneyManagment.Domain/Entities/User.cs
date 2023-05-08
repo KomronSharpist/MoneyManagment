@@ -13,4 +13,6 @@ public class User : Auditable
     public string Salt { get; set; }
     public Roles Role { get; set; }
     public bool IsVerify { get; set; } = false;
+
+    public ICollection<Transaction> Transactions { get; set; }
 }
