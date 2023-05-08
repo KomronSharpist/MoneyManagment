@@ -9,3 +9,6 @@ Admin
 email: admin@gmail.com
 password: Admin2023
 }
+
+
+For income and outgo type I create new entity and you can add this entity your categories. Like a : Shoping, outgo type or Gift, income type 
