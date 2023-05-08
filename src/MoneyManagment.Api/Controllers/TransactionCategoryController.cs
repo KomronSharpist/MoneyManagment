@@ -16,7 +16,7 @@ public class TransactionCategoryController : BaseController
     }
     // Create, Update, Delete, RetrieveById , Retrieve ALl
 
-    [HttpPost("create")]
+    [HttpPost]
     [Authorize("admin")]
     public async Task<IActionResult> Post(TransactionCategoryCreationDto dto)
         => Ok(new
@@ -26,7 +26,7 @@ public class TransactionCategoryController : BaseController
             Data = await this.transactionCategoryService.AddAsync(dto)
         });
 
-    [HttpPut("update")]
+    [HttpPut]
     [Authorize("admin")]
     public async Task<IActionResult> Put([FromBody] TransactionCategoryCreationDto dto, long id)
         => Ok(new
@@ -36,7 +36,7 @@ public class TransactionCategoryController : BaseController
             Data = await this.transactionCategoryService.UpdateAsync(dto, id)
         });
 
-    [HttpDelete("delete/{id:long}")]
+    [HttpDelete("{id:long}")]
     [Authorize("admin")]
     public async Task<IActionResult> Delete(long id)
         => Ok(new
@@ -46,7 +46,7 @@ public class TransactionCategoryController : BaseController
             Data = await this.transactionCategoryService.DeleteAsync(id)
         });
 
-    [HttpGet("get-by-id/{id:long}")]
+    [HttpGet("by-id/{id:long}")]
     [Authorize("allow")]
     public async Task<IActionResult> GetById(long id)
         => Ok(new
@@ -56,7 +56,7 @@ public class TransactionCategoryController : BaseController
             Data = await this.transactionCategoryService.RetrieveByIdAsync(id)
         });
 
-    [HttpGet("get-list")]
+    [HttpGet("list")]
     [Authorize("allow")]
     public async Task<IActionResult> GetAll([FromQuery] PaginationParams @params)
        => Ok(new

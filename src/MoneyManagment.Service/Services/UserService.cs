@@ -161,9 +161,6 @@ public class UserService : IUserService
         if (user is null || user.IsDeleted)
             throw new MoneyException(400, "Email or password is incorrect");
 
-        if (user.Id != HttpContextHelper.UserId && HttpContextHelper.UserRole != Convert.ToString(Roles.Admin))
-            throw new MoneyException(403, "You don't have authorize for this");
-            
         var mappedDto = this.mapper.Map<UserResultDto>(user);
         return mappedDto;
     }
@@ -195,12 +192,12 @@ public class UserService : IUserService
         if (!PasswordHelper.Verify(dto.Password, exist.Salt, exist.Password))
             throw new MoneyException(401, "Your password is wrong for update your profile");
 
+        var newDto = this.mapper.Map(dto, exist);
         var newPass = PasswordHelper.Hash(dto.Password);
-        exist.Password = newPass.passwordHash;
-        exist.Salt = newPass.salt;
-        exist.UpdatedAt = DateTime.UtcNow;
-        exist.UpdatedBy = HttpContextHelper.UserId;
-        this.mapper.Map(dto, exist);
+        newDto.Password = newPass.passwordHash;
+        newDto.Salt = newPass.salt;
+        newDto.UpdatedAt = DateTime.UtcNow;
+        newDto.UpdatedBy = HttpContextHelper.UserId;
 
         await this.unitOfWork.SaveChangesAsync();
 

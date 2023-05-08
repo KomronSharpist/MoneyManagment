@@ -7,4 +7,5 @@ public class TransactionCategory : Auditable
 {
     public string Name { get; set; }
     public TransactionType TransactionType { get; set; }
+    public ICollection<Transaction> Transactions { get; set; }
 }

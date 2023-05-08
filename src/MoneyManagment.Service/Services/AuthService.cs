@@ -33,8 +33,6 @@ public class AuthService : IAuthService
 
 
         return GenerateToken(this.mapper.Map<User>(user));
-
-        throw new NotImplementedException();
     }
 
     private string GenerateToken(User user)
