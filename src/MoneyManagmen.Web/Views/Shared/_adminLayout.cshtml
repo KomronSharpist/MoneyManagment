@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MoneyManagmen.Web</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://www.cssscript.com/demo/sticky.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul class="menu-list" style="padding-left: 0;">
+                <li>
+                    <div class="menu-container">
+                        <button class="icon" id="menu">
+                            <img src="~/images/menu.svg" alt="menu" />
+                        </button>
+                    </div>
+                </li>
+                <li>
+                    <button class="icon" id="search">
+                        <img src="~/images/search.svg" alt="search" />
+                    </button>
+                </li>
+                <li>
+                    <button class="icon" id="dashboard">
+                        <img src="~/images/grid.svg" alt="dashboard" />
+                    </button>
+                </li>
+                <li>
+                    <button class="icon" id="pets">
+                        <img src="~/images/pet.svg" alt="pets" />
+                    </button>
+                </li>
+                <li>
+                    <button class="icon" id="clients">
+                        <img src="~/images/user.svg" alt="clients" />
+                    </button>
+                </li>
+                <li>
+                    <button class="icon" id="vets">
+                        <img src="~/images/vet.svg" alt="vets" />
+                    </button>
+                </li>
+                <li>
+                    <button class="icon" id="settings">
+                        <img src="~/images/settings.svg" alt="settings" />
+                    </button>
+                </li>
+            </ul>
+            <div class="logout-container">
+                <button class="icon-logout">
+                    <img src="~/images/log-out.svg" alt="logout" />
+                </button>
+            </div>
+        </aside>
+
+        <main role="main" class="pb-3 main">
+            @RenderBody()
+        </main>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/script.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+<script>
+    try {
+        fetch(new Request("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js", { method: 'HEAD', mode: 'no-cors' })).then(function (response) {
+            return true;
+        }).catch(function (e) {
+            var carbonScript = document.createElement("script");
+            carbonScript.src = "//cdn.carbonads.com/carbon.js?serve=CE7DC2JW&placement=wwwcssscriptcom";
+            carbonScript.id = "_carbonads_js";
+            document.getElementById("carbon-block").appendChild(carbonScript);
+        });
+    } catch (error) {
+        console.log(error);
+    }
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LLWL5N9CSM"></script>
+
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-LLWL5N9CSM');
+</script>
+
+</html>
