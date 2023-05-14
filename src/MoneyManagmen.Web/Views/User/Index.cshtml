@@ -1,5 +1,56 @@
-﻿@{
-
+﻿@using MoneyManagment.Service.DTOs.Transactions;
+@{
+    Layout = "_Layout";
 }
+@model TotalAndTransaction
 
-<h1>User page</h1>
+<div style="height: 100vh">
+    <div style="margin-top:150px;" class="">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="">
+                <div class="card mb-3" style="border-radius: .5rem; border:2px solid #7290FF">
+                    <div class="gradient-custom text-center text-white" style="height:300px;">
+                        <div style="padding:50px 0px 50px 0px" class="text-center">
+                            <h1 style="padding:20px;"><span>Total: </span> @Model.TotalResultDto.Total</h1>
+                            <p style="color: limegreen;"><span>Income: </span> @Model.TotalResultDto.Income</p>
+                            <p style="color: red;"><span>Outgo: </span> @Model.TotalResultDto.Outgo</p>
+                        </div>
+                    </div>
+                    <div class="g-0">
+                        <div class="container container-fluid d-flex  flex-wrap">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Id</th>
+                                        <th scope="col">Transaction Type</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">CategoryId</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var product in Model.TransactionResults)
+                                    {
+                                        <tr>
+                                            <th scope="row">@product.Id</th>
+                                            <td>@product.TransactionType</td>
+                                            <td>@product.Description</td>
+                                            <td>@product.CategoryId</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .gradient-custom {
+        background: #7290FF;
+        background: -webkit-linear-gradient(to right bottom, rgba(114,130,250,1), rgba(114,130,250,1));
+        background: linear-gradient(to right bottom, rgba(114,130,250, 1), rgba(114,130,250, 1))
+    }
+</style>

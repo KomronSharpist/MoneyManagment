@@ -16,47 +16,30 @@
         <aside class="sidebar">
             <ul class="menu-list" style="padding-left: 0;">
                 <li>
-                    <div class="menu-container">
-                        <button class="icon" id="menu">
-                            <img src="~/images/menu.svg" alt="menu" />
-                        </button>
-                    </div>
+                    <a asp-action="Index" asp-controller="Admin" class="icon" id="users">
+                        <img style="filter: invert(48%) sepia(79%) brightness(20%) contrast(150%); " src="~/images/user.svg" alt="transactions" />
+                    </a>
                 </li>
                 <li>
-                    <button class="icon" id="search">
-                        <img src="~/images/search.svg" alt="search" />
-                    </button>
+                    <a asp-action="Transactions" asp-controller="Admin" class="icon" id="transactions">
+                        <img style="width: 24px;" src="~/images/history.png" alt="transactions" />
+                    </a>
                 </li>
                 <li>
-                    <button class="icon" id="dashboard">
-                        <img src="~/images/grid.svg" alt="dashboard" />
-                    </button>
+                    <a asp-action="TransactionCategories" asp-controller="Admin" class="icon" id="transactionCategories">
+                        <img style="filter: invert(48%) sepia(79%) brightness(20%) contrast(150%); " src="~/images/menu.svg" alt="transaction categories" />
+                    </a>
                 </li>
                 <li>
-                    <button class="icon" id="pets">
-                        <img src="~/images/pet.svg" alt="pets" />
-                    </button>
-                </li>
-                <li>
-                    <button class="icon" id="clients">
-                        <img src="~/images/user.svg" alt="clients" />
-                    </button>
-                </li>
-                <li>
-                    <button class="icon" id="vets">
-                        <img src="~/images/vet.svg" alt="vets" />
-                    </button>
-                </li>
-                <li>
-                    <button class="icon" id="settings">
-                        <img src="~/images/settings.svg" alt="settings" />
-                    </button>
+                    <a asp-action="Settings" asp-controller="Admin" class="icon" id="settings">
+                        <img style="filter: invert(48%) sepia(79%) brightness(20%) contrast(150%); " src="~/images/settings.svg" alt="transaction categories" />
+                    </a>
                 </li>
             </ul>
             <div class="logout-container">
-                <button class="icon-logout">
-                    <img src="~/images/log-out.svg" alt="logout" />
-                </button>
+                <a asp-controller="Auth" asp-action="LogOut" class="icon-logout">
+                    <img style="filter: invert(48%) sepia(79%) brightness(20%) contrast(150%); " src="~/images/log-out.svg" alt="logout" />
+                </a>
             </div>
         </aside>
 
@@ -67,7 +50,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/script.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 

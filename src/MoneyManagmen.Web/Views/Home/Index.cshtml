@@ -31,50 +31,21 @@
                             <i class='bx bxs-lock-alt'></i>
                             <input type="password" asp-for="@Model.CreateUserDto.Password" name="Password" placeholder="Password">
                         </div>
-                        <button type="submit">Sign in</button>
-                        <p><b>Forgot password?</b></p>
+                        <button type="submit">Sign up</button>
+                        @if(Model.WrongMessage is not null)
+                        {
+                            <p><b id="wrongMessage" style="color: red;">@Model.WrongMessage</b></p>
+                        }
+                        @*<p><b>Forgot password?</b></p>*@
                         <p>
                             <span>Don't have an account?</span>
-                            <b onclick="toggle()" class="pointer">Sign up here</b>
+                            <b onclick="toggle()" class="pointer">Sign in here</b>
                         </p>
                     </div>
                 </form>
             </div>
             <div class="form-wrapper"></div>
         </div>
-	@*	<div class="col align-items-center flex-col sign-up">
-			<div class="form-wrapper align-items-center">
-                <form method="post" asp-controller="Auth" asp-action="Registration">
-                    <div class="form sign-up">
-                       <div class="input-group">
-                          <input class="form-control" asp-for="@Model.CreateUserDto.Image" type="file" id="formFile">
-                        </div>
-					    <div class="input-group">
-						    <i class='bx bxs-user'></i>
-						    <input type="text" asp-for="@Model.CreateUserDto.FirstName" placeholder="First Name">
-					    </div>
-					    <div class="input-group">
-						    <i class='bx bx-mail-send'></i>
-						    <input type="text" asp-for="@Model.CreateUserDto.LastName" placeholder="Last Name">
-					    </div>
-					    <div class="input-group">
-						    <i class='bx bxs-lock-alt'></i>
-                                <input type="email" asp-for="@Model.CreateUserDto.Email" placeholder=" Email">
-					    </div>
-					    <div class="input-group">
-						    <i class='bx bxs-lock-alt'></i>
-                                <input type="password" asp-for="@Model.CreateUserDto.Password" placeholder=" Password">
-					    </div>
-					    <button type="submit">Sign up</button>
-					    <p>
-						    <span>Already have an account?</span>
-						    <b onclick="toggle()" class="pointer">Sign in here</b>
-					    </p>
-                    </div>
-                </form>
-			</div>
-
-		</div>*@
 
 		<div class="col align-items-center flex-col sign-in">
 			<div class="form-wrapper align-items-center">
@@ -89,7 +60,11 @@
                             <input type="password" asp-for="@Model.LoginDto.Password" name="Password" placeholder="Password">
                         </div>
                         <button type="submit">Sign in</button>
-                        <p><b>Forgot password?</b></p>
+                        @if (Model.WrongMessage is not null)
+                        {
+                            <p><b id="wrongMessage" style="color: red;">@Model.WrongMessage</b></p>
+                        }
+                        @*<p><b>Forgot password?</b></p>*@
                         <p>
                             <span>Don't have an account?</span>
                             <b onclick="toggle()" class="pointer">Sign up here</b>
@@ -113,8 +88,10 @@
 </div>
 <script>
     let container = document.getElementById('container')
+    let paragraf = document.getElementById('wrongMessage')
 
     toggle = () => {
+        paragraf.classList.add("wrong")
         container.classList.toggle('sign-in')
         container.classList.toggle('sign-up')
     }
@@ -159,6 +136,9 @@ body {
     overflow: hidden;
 }
 
+.wrong{
+    display: none;
+}
 .row {
     display: flex;
     flex-wrap: wrap;

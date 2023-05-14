@@ -24,4 +24,8 @@
     <ProjectReference Include="..\MoneyManagment.Service\MoneyManagment.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

@@ -4,7 +4,6 @@ const menu = document.querySelector("#menu");
 const main = document.querySelector(".main");
 
 const menu_container = document.querySelector(".menu-container");
-const logout_container = document.querySelector(".logout-container");
 
 const icon_logout = document.querySelector(".icon-logout");
 
@@ -148,11 +147,11 @@ const openMenu = () => {
 
   logout_container.insertBefore(user_container, logout_container.childNodes[0]);
 
-  let logout_photo = document.createElement("img");
-  logout_photo.id = "logout-photo";
-  logout_photo.src = "https://github.com/diegoafv.png";
-  logout_container.style.paddingLeft = "15px";
-  logout_container.insertBefore(logout_photo, logout_container.childNodes[0]);
+  //let logout_photo = document.createElement("img");
+  //logout_photo.id = "logout-photo";
+  //logout_photo.src = "https://github.com/diegoafv.png";
+  //logout_container.style.paddingLeft = "15px";
+  //logout_container.insertBefore(logout_photo, logout_container.childNodes[0]);
 
   main.style.width = "calc(100% - 250px)";
 };
@@ -188,9 +187,9 @@ const closeMenu = () => {
   settings.style.width = "50px";
   settings.style.justifyContent = "center";
 
-  logout_container.removeChild(document.getElementById("logout-photo"));
-  logout_container.removeChild(document.getElementById("user-container"));
-  logout_container.style.paddingLeft = "0px";
+  //logout_container.removeChild(document.getElementById("logout-photo"));
+  //logout_container.removeChild(document.getElementById("user-container"));
+  //logout_container.style.paddingLeft = "0px";
 
   icon_logout.style.width = "100%";
 

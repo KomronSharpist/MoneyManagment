@@ -16,6 +16,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<ITransactionCategoryService, TransactionCategoryService>();
 
 builder.Services.AddAutoMapper(typeof(MapperProfile));
 

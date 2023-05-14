@@ -6,4 +6,5 @@ public class LoginAndCreateUserViewModel
 {
     public UserLoginDto LoginDto { get; set; }
     public UserCreationDto CreateUserDto { get; set; }
+    public string WrongMessage { get; set; }
 }

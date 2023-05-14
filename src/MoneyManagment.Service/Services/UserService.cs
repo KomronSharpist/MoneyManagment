@@ -31,7 +31,6 @@ public class UserService : IUserService
         if (exist is not null)
             throw new MoneyException(405, "User is already exist");
 
-
         if (exist is not null && exist.IsDeleted && PasswordHelper.Verify(dto.Password, exist.Salt, exist.Password))
         {
             var hash = PasswordHelper.Hash(exist.Password);

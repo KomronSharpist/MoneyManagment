@@ -1,0 +1,32 @@
+﻿@using MoneyManagment.Service.DTOs.TransactionCategory;
+@{
+    Layout = "_adminLayout";
+}
+
+
+@model List<TransactionCategoryResultDto>
+
+
+<h1>TransactionCategories</h1>
+
+<div class="container container-fluid d-flex  flex-wrap">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Transaction Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                <tr>
+                    <th scope="row">@product.Id</th>
+                    <td>@product.Name</td>
+                    <td>@product.TransactionType</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,5 +1,79 @@
-﻿@{
+﻿@using MoneyManagment.Service.DTOs.Users;
+@{
     Layout = "_adminLayout";
 }
 
-<h1>Admin page</h1>
+@model List<UserResultDto>
+
+
+<h1 class="text-center" style="color: #111; font-size: 30px;">Users</h1>
+
+<div class="d-flex justify-content-between pt-5">
+    <form class="" method="post" action="@Url.Action("UserSearch","Admin")">
+        <input style="height: 30px; border: 2px solid #7290FF; border-radius: 5px; background-color: transparent; padding: 5px; " type="text" name="value" placeholder="Search...">
+        <button style="height: 30px; border: 2px solid #7290FF; border-radius: 5px; background-color: #7290FF; color: #fff; font-size: 13.5px; padding: 5px; " type="submit">Search</button>
+    </form>
+
+    <button type="button" style="background-color: #7290FF; font-size: 13.5px; padding: 5px; border-radius: 5px; border: 2px solid #7290FF; color: #fff;" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+        Add User
+    </button>
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Understood</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="container">
+    <div class="main-body pt-5">
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 gutters-sm">
+            @foreach (var product in Model)
+            {
+                <div class="col mb-4" >
+                    <div class="card " style="border-radius: 15px;">
+                        <img src="~/images/solid-color-image.png" alt="Cover" class="card-img-top">
+                        <div style="height: 300px;" class="card-body text-center bg-white">
+                           @{
+                                        if (!File.Exists(@product.ImagePath))
+                                        {
+                                            <img src="~/uploads/images/user.png" style="width:100px;margin-top:-65px" alt="User" class="img-fluid img-thumbnail rounded-circle border-0 mb-3">
+                                        }
+                                        else
+                                        {
+                                            <img src="~/uploads/images/@product.ImagePath.Split("\\")[3]" style="width:100px;margin-top:-65px" alt="User" class="img-fluid img-thumbnail rounded-circle border-0 mb-3">
+                                        }
+                           }
+                           <h5 class="card-title">@product.FirstName @product.LastName</h5>
+                           <p class="text-secondary mb-1">@product.Role</p>
+                           <p class="text-muted font-size-sm">@product.Email</p>
+                           @{
+                               if (product.IsVerify)
+                               {
+                                   <p style="color: limegreen;" class="font-size-sm"><b style="color: #7290FF;">Is verify:    </b>@product.IsVerify</p>
+                               }
+                               else
+                               {
+                                   <p style="color: red;" class="font-size-sm"><b style="color: #7290FF;">Is verify: </b>@product.IsVerify</p>
+                               }
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

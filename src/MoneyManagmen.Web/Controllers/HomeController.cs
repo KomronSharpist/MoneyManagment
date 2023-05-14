@@ -14,9 +14,13 @@ namespace MoneyManagmen.Web.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(LoginAndCreateUserViewModel model)
         {
-            var model = new LoginAndCreateUserViewModel
+            if(model.WrongMessage is not null)
+            {
+                return View(model);
+            }
+            var model2 = new LoginAndCreateUserViewModel
             {
                 LoginDto = new UserLoginDto(),
                 CreateUserDto = new UserCreationDto()

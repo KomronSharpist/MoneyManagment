@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MoneyManagmen.Web.Models;
+using MoneyManagment.Domain.Entities;
 using MoneyManagment.Domain.Enums;
 using MoneyManagment.Service.DTOs.Users;
 using MoneyManagment.Service.Interfaces;
@@ -21,34 +23,62 @@ public class AuthController : Controller
 
     public async Task<IActionResult> Index(UserLoginDto dto)
     {
-        var user = await this.authService.AuthenticateAsync(dto);
-        if (user == null)
-            return RedirectToAction("Index","Home");
+        try
+        {
+            var user = await this.authService.AuthenticateAsync(dto);
+            
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(user);
+            var userId = token.Claims.First(c => c.Type == "Id").Value;
+            var role = token.Claims.First(c => c.Type == "role").Value;
 
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var token = tokenHandler.ReadJwtToken(user);
-        var userId = token.Claims.First(c => c.Type == "Id").Value;
-        var role = token.Claims.First(c => c.Type == "role").Value;
+            Response.Cookies.Append("userId", JsonConvert.SerializeObject(userId));
+            Response.Cookies.Append("role", JsonConvert.SerializeObject(role));
 
-        Response.Cookies.Append("userId", JsonConvert.SerializeObject(userId));
-        
-        if(role == Convert.ToString(Roles.Admin))
-            return RedirectToAction("Index","Admin");
-        
-        return RedirectToAction("Index","User");
+            if (role == Convert.ToString(Roles.Admin))
+                return RedirectToAction("Index", "Admin");
+
+            return RedirectToAction("Index", "User");
+        }
+        catch
+        {
+            var model = new LoginAndCreateUserViewModel
+            {
+                LoginDto = new UserLoginDto(),
+                CreateUserDto = new UserCreationDto(),
+                WrongMessage = "Email or password is wrong"
+            };
+            return RedirectToActionPermanent("Index", "Home", model);
+        }
+    }
+    public async Task<IActionResult> LogOut()
+    {
+        Response.Cookies.Append("userId", JsonConvert.SerializeObject(0));
+        return RedirectToAction("Index", "Home");
     }
 
-    public async Task<IActionResult> Register(UserCreationDto dto, IFormFile image)
+    public async Task<IActionResult> Register(UserCreationDto dto)
     {
-        var user = await this.userService.AddAsync(dto);
-        if (!user)
-            return RedirectToAction("Index", "Home", user);
-
-        var newDto = new UserLoginDto()
+        try
         {
-            Email = dto.Email,
-            Password = dto.Password,
-        };
-        return RedirectToAction("Index", "Auth", newDto);
+            var user = await this.userService.AddAsync(dto);
+      
+            var newDto = new UserLoginDto()
+            {
+                Email = dto.Email,
+                Password = dto.Password,
+            };
+            return RedirectToAction("Index", "Auth", newDto);
+        }
+        catch
+        {
+            var model = new LoginAndCreateUserViewModel
+            {
+                LoginDto = new UserLoginDto(),
+                CreateUserDto = new UserCreationDto(),
+                WrongMessage = "User is already exist."
+            };
+            return RedirectToActionPermanent("Index", "Home", model);
+        }
     }
 }
