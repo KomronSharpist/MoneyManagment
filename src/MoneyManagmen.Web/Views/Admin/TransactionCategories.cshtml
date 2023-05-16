@@ -1,32 +1,105 @@
-﻿@using MoneyManagment.Service.DTOs.TransactionCategory;
+﻿@using MoneyManagment.Domain.Enums;
+@using MoneyManagment.Service.DTOs.TransactionCategory;
 @{
     Layout = "_adminLayout";
 }
 
 
-@model List<TransactionCategoryResultDto>
+@model TransactionCreateAndResult
 
 
-<h1>TransactionCategories</h1>
+<h1 class="text-center">TransactionCategories</h1>
 
-<div class="container container-fluid d-flex  flex-wrap">
+<div class="d-flex justify-content-between pt-5 ">
+    <form class="" method="post" action="@Url.Action("UserSearch","Admin")">
+        <input style="height: 30px; border: 2px solid #7290FF; border-radius: 5px; background-color: transparent; padding: 5px; " type="text" name="value" placeholder="Search...">
+        <button style="height: 30px; border: 2px solid #7290FF; border-radius: 5px; background-color: #7290FF; color: #fff; font-size: 13.5px; padding: 5px; " type="submit">Search</button>
+    </form>
+
+    <button type="button" style="background-color: #7290FF; font-size: 13.5px; padding: 5px; border-radius: 5px; border: 2px solid #7290FF; color: #fff;" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+        Add Category
+    </button>
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" asp-controller="Admin" asp-action="CategoryCreate" enctype="multipart/form-data">
+                        <div class="form sign-up">
+                            <div class="input-group">
+                                <input type="text" asp-for="@Model.CreationDto.Name" name="CreationDto.Name" placeholder="Name">
+                            </div>
+                            <div class="input-group">
+                                <select asp-for="@Model.CreationDto.TransactionType" class="form-select" aria-label="Default select example">
+                                    <option selected>Chose transaction type</option>
+                                    <option value="0">income</option>
+                                    <option value="1">outgo</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="container container-fluid d-flex  flex-wrap pt-5">
     <table class="table">
         <thead>
             <tr>
                 <th scope="col">Id</th>
                 <th scope="col">Name</th>
                 <th scope="col">Transaction Type</th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var product in Model)
+            @foreach (var product in Model.TransactionCategories)
             {
-                <tr>
-                    <th scope="row">@product.Id</th>
-                    <td>@product.Name</td>
-                    <td>@product.TransactionType</td>
-                </tr>
+                if(product.TransactionType == TransactionType.income)
+                {
+                    <tr style="height: 20px;" class="table-success">
+                        <th scope="row">@product.Id</th>
+                        <td>@product.Name</td>
+                        <td>@product.TransactionType</td>
+                        <td>
+                            <a href="@Url.Action("CategoryDelete", "Admin" , new {Id = product.Id})" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr style="height: 20px;" class="table-danger">
+                        <th scope="row">@product.Id</th>
+                        <td>@product.Name</td>
+                        <td>@product.TransactionType</td>
+                        <td>
+                            <a href="@Url.Action("CategoryDelete", "Admin" , new {Id = product.Id})" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
 </div>
+
+<style>
+    .input-group input {
+        width: 100%;
+        padding: 1rem 3rem;
+        font-size: 1rem;
+        background-color: #fff;
+        border-radius: 0.5rem;
+        border: 0px solid gray;
+        outline: none;
+    }
+</style>

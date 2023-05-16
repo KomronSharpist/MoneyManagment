@@ -28,15 +28,12 @@ public class UserService : IUserService
     public async ValueTask<bool> AddAsync(UserCreationDto dto)
     {
         var exist = await this.unitOfWork.Users.SelectAsync(u => u.Email.Equals(dto.Email));
-        if (exist is not null)
-            throw new MoneyException(405, "User is already exist");
 
         if (exist is not null && exist.IsDeleted && PasswordHelper.Verify(dto.Password, exist.Salt, exist.Password))
         {
             var hash = PasswordHelper.Hash(exist.Password);
             exist.IsDeleted = false;
             exist.UpdatedAt = DateTime.UtcNow;
-            exist.UpdatedBy = HttpContextHelper.UserId;
             exist.Password = hash.passwordHash;
             exist.Salt = hash.salt;
             var mappedDto = this.mapper.Map(dto, exist);
@@ -65,28 +62,42 @@ public class UserService : IUserService
             await this.unitOfWork.SaveChangesAsync();
             return true;
         }
+        else if(exist is not null && exist.IsDeleted && !PasswordHelper.Verify(dto.Password, exist.Salt, exist.Password))
+        {
+            throw new MoneyException(400, "Email or password is wrong");
+        }
 
-        byte[] image2 = dto.Image.ToByteArray();
-        var fileExtension2 = Path.GetExtension(dto.Image.FileName);
-        var fileName2 = Guid.NewGuid().ToString("N") + fileExtension2;
-        var webRootPath2 = EnvironmentHelper.WebHostPath;
-        var folder2 = Path.Combine("wwwroot", "uploads", "images");
+        if(dto.Image is not null)
+        {
+            byte[] image2 = dto.Image.ToByteArray();
+            var fileExtension2 = Path.GetExtension(dto.Image.FileName);
+            var fileName2 = Guid.NewGuid().ToString("N") + fileExtension2;
+            var webRootPath2 = EnvironmentHelper.WebHostPath;
+            var folder2 = Path.Combine("wwwroot", "uploads", "images");
+            if (!Directory.Exists(folder2))
+                Directory.CreateDirectory(folder2);
 
-        if (!Directory.Exists(folder2))
-            Directory.CreateDirectory(folder2);
+            var fullPath2 = Path.Combine(folder2, fileName2);
+            using var imageStream2 = new MemoryStream(image2);
 
-        var fullPath2 = Path.Combine(folder2, fileName2);
-        using var imageStream2 = new MemoryStream(image2);
+            using var imagePath2 = new FileStream(fullPath2, FileMode.CreateNew);
+            imageStream2.WriteTo(imagePath2);
+            var newDto2 = this.mapper.Map<User>(dto);
+            var newHash2 = PasswordHelper.Hash(dto.Password);
+            newDto2.Password = newHash2.passwordHash;
+            newDto2.Salt = newHash2.salt;
+            newDto2.ImagePath = fullPath2;
+            await this.unitOfWork.Users.InsertAsync(newDto2);
+            await this.unitOfWork.SaveChangesAsync();
 
-        using var imagePath2 = new FileStream(fullPath2, FileMode.CreateNew);
-        imageStream2.WriteTo(imagePath2);
-
+            return true;
+        }
 
         var newDto = this.mapper.Map<User>(dto);
         var newHash = PasswordHelper.Hash(dto.Password);
         newDto.Password = newHash.passwordHash;
         newDto.Salt = newHash.salt;
-        newDto.ImagePath = fullPath2;
+        newDto.ImagePath = "wwwroot\\uploads\\images\\user.png";
         await this.unitOfWork.Users.InsertAsync(newDto);
         await this.unitOfWork.SaveChangesAsync();
 
@@ -110,7 +121,6 @@ public class UserService : IUserService
         exist.Password = newPassword.passwordHash;
         exist.Salt = newPassword.salt;
         exist.UpdatedAt = DateTime.UtcNow;
-        exist.UpdatedBy = HttpContextHelper.UserId;
         await this.unitOfWork.SaveChangesAsync();
 
         return true;
@@ -118,27 +128,12 @@ public class UserService : IUserService
 
     public async ValueTask<bool> DeleteAsync(long id)
     {
-        if (id == 0)
-        {
-            await this.unitOfWork.Users.DeleteAsync(u => u.Id.Equals(HttpContextHelper.UserId));
-            await this.unitOfWork.SaveChangesAsync();
-            return true;
-        }
-        else
-        {
-            var exist = await this.unitOfWork.Users.SelectAsync(u => u.Id.Equals(id));
-            if (exist is null || exist.IsDeleted)
-                throw new MoneyException(400, "User is not found");
+        var exist = await this.unitOfWork.Users.SelectAsync(u => u.Id.Equals(id));
+        if (exist is null || exist.IsDeleted)
+            throw new MoneyException(400, "User is not found");
 
-            if (HttpContextHelper.UserRole == Convert.ToString(Roles.Admin) || exist.Id == HttpContextHelper.UserId)
-            {
-                exist.DeletedBy = HttpContextHelper.UserId;
-                await this.unitOfWork.Users.DeleteAsync(u => u.Id.Equals(id));
-                await this.unitOfWork.SaveChangesAsync();
-            }
-            else
-                throw new MoneyException(403, "You can not delete, you don't have authorize");
-        }
+        await this.unitOfWork.Users.DeleteAsync(u => u.Id.Equals(id));
+        await this.unitOfWork.SaveChangesAsync();
 
         return true;
     }
@@ -196,8 +191,7 @@ public class UserService : IUserService
         newDto.Password = newPass.passwordHash;
         newDto.Salt = newPass.salt;
         newDto.UpdatedAt = DateTime.UtcNow;
-        newDto.UpdatedBy = HttpContextHelper.UserId;
-
+        
         await this.unitOfWork.SaveChangesAsync();
 
         return this.mapper.Map<UserResultDto>(exist);

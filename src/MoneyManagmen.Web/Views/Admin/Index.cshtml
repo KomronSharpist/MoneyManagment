@@ -3,7 +3,7 @@
     Layout = "_adminLayout";
 }
 
-@model List<UserResultDto>
+@model UserResAndCreate
 
 
 <h1 class="text-center" style="color: #111; font-size: 30px;">Users</h1>
@@ -25,11 +25,33 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Understood</button>
+                    <form method="post" asp-controller="Admin" asp-action="Create" enctype="multipart/form-data">
+                        <div class="form sign-up">
+                            <div class="input-group">
+                                <input class="form-control" asp-for="@Model.Creation.Image" name="Image" type="file" id="formFile" placeholder="Image">
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-user'></i>
+                                    <input type="text" asp-for="@Model.Creation.FirstName" name="FirstName" placeholder="FirstName">
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-user'></i>
+                                    <input type="text" asp-for="@Model.Creation.LastName" name="LastName" placeholder="LastName">
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-user'></i>
+                                    <input type="email" asp-for="@Model.Creation.Email" name="Email" placeholder="Email">
+                            </div>
+                            <div class="input-group">
+                                <i class='bx bxs-lock-alt'></i>
+                                    <input type="password" asp-for="@Model.Creation.Password" name="Password" placeholder="Password">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -41,22 +63,30 @@
     <div class="main-body pt-5">
 
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 gutters-sm">
-            @foreach (var product in Model)
+            @foreach (var product in Model.Results)
             {
                 <div class="col mb-4" >
                     <div class="card " style="border-radius: 15px;">
                         <img src="~/images/solid-color-image.png" alt="Cover" class="card-img-top">
                         <div style="height: 300px;" class="card-body text-center bg-white">
                            @{
-                                        if (!File.Exists(@product.ImagePath))
-                                        {
-                                            <img src="~/uploads/images/user.png" style="width:100px;margin-top:-65px" alt="User" class="img-fluid img-thumbnail rounded-circle border-0 mb-3">
-                                        }
-                                        else
-                                        {
-                                            <img src="~/uploads/images/@product.ImagePath.Split("\\")[3]" style="width:100px;margin-top:-65px" alt="User" class="img-fluid img-thumbnail rounded-circle border-0 mb-3">
-                                        }
-                           }
+                                if (!File.Exists(@product.ImagePath))
+                                {
+                                    <img src="~/uploads/images/user.png" style="width:100px;margin-top:-65px" alt="User" class="img-fluid img-thumbnail rounded-circle border-0 mb-3">
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        <img src="~/uploads/images/@product.ImagePath.Split("\\")[3]" style="width:100px;margin-top:-65px" alt="User" class="img-fluid img-thumbnail rounded-circle border-0 mb-3">
+                                    }
+                                    catch
+                                    {
+                                        <img src="~/uploads/images/user.png" style="width:100px;margin-top:-65px" alt="User" class="img-fluid img-thumbnail rounded-circle border-0 mb-3">
+                                    }
+
+                                }
+                            }
                            <h5 class="card-title">@product.FirstName @product.LastName</h5>
                            <p class="text-secondary mb-1">@product.Role</p>
                            <p class="text-muted font-size-sm">@product.Email</p>
@@ -71,9 +101,64 @@
                                }
                             }
                         </div>
+                        <div class="d-flex justify-content-around pb-5">
+                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">
+                                Update
+                            </button>
+                            <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="post" asp-controller="Admin" asp-action="Update" asp-area="@product.Email" enctype="multipart/form-data">
+                                                <div class="form sign-up">
+                                                    <div class="input-group">
+                                                        <input class="form-control" asp-for="@Model.Creation.Image" name="Image" type="file" id="formFile" placeholder="Image">
+                                                    </div>
+                                                    <div class="input-group">
+                                                        <input type="text" asp-for="@Model.Creation.FirstName" name="FirstName" placeholder="First Name">
+                                                    </div>
+                                                    <div class="input-group">
+                                                        <input type="text" asp-for="@Model.Creation.LastName" name="LastName" placeholder="Last Name">
+                                                    </div>
+                                                    <div class="input-group">
+                                                        <br>
+                                                        <p style="color:#7290ff; padding: 0px 0px 0px 3rem">Password is required. Please enter your correct password.</p>
+                                                        <input type="password" asp-for="@Model.Creation.Password" name="Password" placeholder="Password">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-primary">Update</button>
+                                                </div>
+                                                @*@Url.Action("Update", "Admin" , new {Id = product.Id})*@
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="@Url.Action("Delete", "Admin" , new {Id = product.Id})" class="btn btn-danger">Delete</a>
+                        </div>
                     </div>
                 </div>
             }
         </div>
     </div>
 </div>
+
+<style>
+    .input-group input {
+        width: 100%;
+        padding: 1rem 3rem;
+        font-size: 1rem;
+        background-color: #fff;
+        border-radius: 0.5rem;
+        border: 0px solid gray;
+        outline: none;
+    }
+
+
+</style>

@@ -1,4 +1,5 @@
-﻿@using MoneyManagment.Service.DTOs.Transactions;
+﻿@using MoneyManagment.Domain.Enums;
+@using MoneyManagment.Service.DTOs.Transactions;
 @{
     Layout = "_Layout";
 }
@@ -15,18 +16,33 @@
                 <th scope="col">Id</th>
                 <th scope="col">Transaction Type</th>
                 <th scope="col">Description</th>
-                <th scope="col">CategoryId</th>
+                <th scope="col">Category Id</th>
+                <th scope="col">Date</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var product in Model)
             {
-                    <tr>
+                if (product.TransactionType == TransactionType.income)
+                {
+                    <tr class="table-success">
                         <th scope="row">@product.Id</th>
                         <td>@product.TransactionType</td>
                         <td>@product.Description</td>
                         <td>@product.CategoryId</td>
+                        <td>@product.CreatedAt</td>
                     </tr>
+                }
+                else
+                {
+                    <tr class="table-danger">
+                        <th scope="row">@product.Id</th>
+                        <td>@product.TransactionType</td>
+                        <td>@product.Description</td>
+                        <td>@product.CategoryId</td>
+                        <td>@product.CreatedAt</td>
+                    </tr>
+                }
             }
         </tbody>
     </table>

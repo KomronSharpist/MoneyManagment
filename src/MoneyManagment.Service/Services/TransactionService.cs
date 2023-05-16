@@ -22,12 +22,12 @@ public class TransactionService : ITransactionService
         this.mapper = mapper;
     }
 
-    public async ValueTask<bool> AddAsync(TransactionCreationDto dto)
+    public async ValueTask<bool> AddAsync(TransactionCreationDto dto, long userId)
     {
         if (dto.TransactionType != Domain.Enums.TransactionType.income && dto.TransactionType != Domain.Enums.TransactionType.outgo)
             throw new MoneyException(400, "Type is wrong: income = 0, outgo = 1");
         var mappedDto = this.mapper.Map<Transaction>(dto);
-        mappedDto.UserId = HttpContextHelper.UserId;
+        mappedDto.UserId = userId;
         mappedDto.TransactionCategoryId = dto.CategoryId;
         await this.unitOfWork.Transactions.InsertAsync(mappedDto);
         await this.unitOfWork.SaveChangesAsync();
@@ -42,15 +42,10 @@ public class TransactionService : ITransactionService
             throw new MoneyException(404, "Transaction is not found");
 
         if (HttpContextHelper.UserRole == Convert.ToString(Roles.Admin))
-        {
-            transaction.DeletedBy = HttpContextHelper.UserId;
             await this.unitOfWork.Transactions.DeleteAsync(t => t.Id.Equals(id));
-        }
+
         else if (HttpContextHelper.UserRole == Convert.ToString(Roles.User) && transaction.UserId == HttpContextHelper.UserId)
-        {
-            transaction.DeletedBy = HttpContextHelper.UserId;
             await this.unitOfWork.Transactions.DeleteAsync(t => t.Id.Equals(id));
-        }
         else
             throw new MoneyException(403, "You don't have authorize for this");
 
@@ -69,10 +64,10 @@ public class TransactionService : ITransactionService
         return this.mapper.Map<List<TransactionResultDto>>(transactions);
     }
 
-    public async ValueTask<TransactionTotalResultDto> RetrieveAllByMeAsync(PaginationParams @params)
+    public async ValueTask<TransactionTotalResultDto> RetrieveAllByMeAsync(PaginationParams @params, long userId)
     {
         var transaction = await this.unitOfWork.Transactions.SelectAll()
-            .Where(t => t.IsDeleted == false && t.UserId == HttpContextHelper.UserId)
+            .Where(t => t.IsDeleted == false && t.UserId == userId)
             .ToPagedList(@params)
             .ToListAsync();
 
@@ -131,11 +126,11 @@ public class TransactionService : ITransactionService
     }
 
 
-    public async ValueTask<TransactionTotalResultDto> RetrieveMothlyByMeAsync(PaginationParams @params)
+    public async ValueTask<TransactionTotalResultDto> RetrieveMothlyByMeAsync(PaginationParams @params, long userId)
     {
         var transaction = await this.unitOfWork.Transactions.SelectAll()
            .Where(t => t.IsDeleted == false &&
-           t.UserId == HttpContextHelper.UserId &&
+           t.UserId == userId &&
            t.CreatedAt.Year == DateTime.UtcNow.Year && t.CreatedAt.Month == DateTime.UtcNow.Month)
            .ToPagedList(@params)
            .ToListAsync();
@@ -197,13 +192,11 @@ public class TransactionService : ITransactionService
         {
             var mappedDto = this.mapper.Map(dto, transaction);
             mappedDto.UpdatedAt = DateTime.UtcNow;
-            mappedDto.UpdatedBy = HttpContextHelper.UserId;
         }
         else if (HttpContextHelper.UserRole == Convert.ToString(Roles.User) && HttpContextHelper.UserId == transaction.UserId)
         {
             var mappedDto = this.mapper.Map(dto, transaction);
             mappedDto.UpdatedAt = DateTime.UtcNow;
-            mappedDto.UpdatedBy = HttpContextHelper.UserId;
         }
         else
             throw new MoneyException(403, "You don't have authorize for this");

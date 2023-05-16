@@ -4,53 +4,269 @@
 }
 @model TotalAndTransaction
 
-<div style="height: 100vh">
-    <div style="margin-top:150px;" class="">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="">
-                <div class="card mb-3" style="border-radius: .5rem; border:2px solid #7290FF">
-                    <div class="gradient-custom text-center text-white" style="height:300px;">
-                        <div style="padding:50px 0px 50px 0px" class="text-center">
-                            <h1 style="padding:20px;"><span>Total: </span> @Model.TotalResultDto.Total</h1>
-                            <p style="color: limegreen;"><span>Income: </span> @Model.TotalResultDto.Income</p>
-                            <p style="color: red;"><span>Outgo: </span> @Model.TotalResultDto.Outgo</p>
-                        </div>
-                    </div>
-                    <div class="g-0">
-                        <div class="container container-fluid d-flex  flex-wrap">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Id</th>
-                                        <th scope="col">Transaction Type</th>
-                                        <th scope="col">Description</th>
-                                        <th scope="col">CategoryId</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var product in Model.TransactionResults)
-                                    {
-                                        <tr>
-                                            <th scope="row">@product.Id</th>
-                                            <td>@product.TransactionType</td>
-                                            <td>@product.Description</td>
-                                            <td>@product.CategoryId</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="home-tokens">
+    <div class="current-wallet-balance-parent">
+        <div class="current-wallet-balance">Current Wallet Balance</div>
+        <div class="div">$@Model.TotalResultDto.Total</div>
+    </div>
+    <div class="group-parent">
+        <div class="vector-parent">
+            <img class="group-child" alt="" src="./public/rectangle-8.svg" />
+
+            <div class="div1">-@Model.TotalResultDto.Outgo</div>
+        </div>
+        <div class="vector-group">
+            <img class="group-item" alt="" src="./public/rectangle-81.svg" />
+
+            <div class="div2">+@Model.TotalResultDto.Income</div>
         </div>
     </div>
-</div>
 
+    <div class="home-tokens-child"></div>
+    <img class="home-tokens-item" alt="" src="./public/rectangle-5.svg" />
+
+    <div class="home-tokens-inner"></div>
+    <div class="history">History</div>
+    <div class="chevron-down-1-wrapper">
+        <select class="form-select" aria-label="Default select example">
+            <option selected>All</option>
+            <option value="1">Monthly</option>
+        </select>
+    </div>
+</div>
+*@
 <style>
-    .gradient-custom {
-        background: #7290FF;
-        background: -webkit-linear-gradient(to right bottom, rgba(114,130,250,1), rgba(114,130,250,1));
-        background: linear-gradient(to right bottom, rgba(114,130,250, 1), rgba(114,130,250, 1))
+    :root {
+        --font-urbanist: Urbanist;
+        --font-size-xs: 12px;
+        --font-size-sm: 14px;
+        --color-darkslategray: #2f2f34;
+        --color-whitesmoke: #e9e9e9;
+        --color-white: #fff;
+        --padding-9xs: 4px;
+        --br-31xl: 50px;
+        --br-12xs-3: 0.3px;
     }
+
+    .current-wallet-balance,
+    .div {
+        position: absolute;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .current-wallet-balance {
+        top: 0;
+        left: 34.05px;
+        letter-spacing: 0.02em;
+        width: 281.89px;
+        height: 20.22px;
+    }
+
+    .div {
+        top: 30.92px;
+        left: 0;
+        font-size: 40px;
+        width: 350px;
+        height: 57.08px;
+    }
+
+    .current-wallet-balance-parent {
+        position: absolute;
+        top: 158px;
+        left: 424px;
+        width: 350px;
+        height: 88px;
+        color: var(--color-white);
+    }
+
+    .add {
+        position: absolute;
+        height: 4.35%;
+        width: 31.28%;
+        top: 95.65%;
+        left: 40.92%;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .send-child,
+    .send-item {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 29.05px;
+        height: 84.14px;
+        overflow: hidden;
+    }
+
+    .send-item {
+        height: 19.44%;
+        width: 88.04%;
+        top: 74.17%;
+        right: 0;
+        bottom: 6.39%;
+        left: 11.96%;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .send {
+        position: absolute;
+        height: 40.52%;
+        width: 6.69%;
+        top: -3.94%;
+        right: 48.68%;
+        bottom: 63.42%;
+        left: 44.63%;
+    }
+
+    .home-tokens-child {
+        position: absolute;
+        top: calc(50% - 66px);
+        left: calc(50% - 528px);
+        border-radius: 80px;
+        background-color: var(--color-white);
+        width: 1060px;
+        height: 552px;
+    }
+
+    .home-tokens-inner,
+    .home-tokens-item {
+        position: absolute;
+        left: 365px;
+        width: 472px;
+    }
+
+    .home-tokens-item {
+        top: 346px;
+        border-radius: 61px;
+        height: 92px;
+    }
+
+    .home-tokens-inner {
+        top: 340px;
+        background-color: #7290FF;
+        height: 110px;
+        border-bottom-right-radius: 40px;
+        border-bottom-left-radius: 40px;
+    }
+
+    .history {
+        position: absolute;
+        top: 357px;
+        left: 493px;
+        font-size: 48px;
+        letter-spacing: 0.02em;
+        font-weight: 600;
+        display: inline-block;
+        width: 232px;
+        height: 65px;
+    }
+
+    .group-child {
+        position: absolute;
+        top: 5.5px;
+        left: 0.36px;
+        border-radius: 0.32px;
+        width: 10px;
+        height: 6px;
+    }
+
+    .div1 {
+        position: absolute;
+        top: 0;
+        left: 17.38px;
+        letter-spacing: 0.02em;
+        font-weight: 500;
+    }
+
+    .vector-parent {
+        position: relative;
+        width: 54.38px;
+        height: 14px;
+    }
+
+    .group-item {
+        position: absolute;
+        top: 4.19px;
+        left: 0.34px;
+        border-radius: 0.32px;
+        width: 9.47px;
+        height: 6px;
+    }
+
+    .div2 {
+        position: absolute;
+        top: 0;
+        left: 15px;
+        letter-spacing: 0.02em;
+        font-weight: 500;
+    }
+
+    .vector-group {
+        position: relative;
+        width: 54px;
+        height: 14px;
+        color: #7290FF;
+    }
+
+    .group-parent {
+        position: absolute;
+        top: 261px;
+        left: 467px;
+        border-radius: var(--br-31xl);
+        background-color: var(--color-darkslategray);
+        width: 266px;
+        height: 39px;
+        display: flex;
+        flex-direction: row;
+        padding: var(--padding-9xs) 10px;
+        box-sizing: border-box;
+        align-items: center;
+        justify-content: center;
+        gap: 11px;
+        font-size: var(--font-size-xs);
+        color: red;
+    }
+
+    .chevron-down-1-icon {
+        position: relative;
+        width: 10px;
+        height: 12px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .chevron-down-1-wrapper select{
+        position: absolute;
+        justify-content: center;
+        top: 60px;
+        left: 115px;
+        color: #fff;
+        border-radius: var(--br-31xl);
+        border: none;
+        background-color: var(--color-darkslategray);
+        width: 202px;
+        height: 36px;
+        display: flex;
+        flex-direction: row;
+        padding: var(--padding-9xs) 16px var(--padding-9xs) 97px;
+        box-sizing: border-box;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .home-tokens {
+        position: relative;
+        background-color: #7290FF;
+        width: 100%;     
+        height: 812px;
+        overflow: hidden;
+        text-align: center;
+        font-size: var(--font-size-sm);
+        color: var(--color-whitesmoke);
+        font-family: var(--font-urbanist);
+    }
+
 </style>

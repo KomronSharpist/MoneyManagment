@@ -43,7 +43,6 @@ namespace MoneyManagment.Service.Services
                 throw new MoneyException(404, "Category is not found");
 
             var mappedDto = this.mapper.Map<TransactionCategory>(category);
-            mappedDto.DeletedBy = HttpContextHelper.UserId;
             await this.unitOfWork.TransactionCategories.DeleteAsync(c => c.Id.Equals(mappedDto.Id));
             await this.unitOfWork.SaveChangesAsync();
 
@@ -77,7 +76,6 @@ namespace MoneyManagment.Service.Services
 
             var mappedDto = this.mapper.Map(dto, category);
             mappedDto.UpdatedAt = DateTime.UtcNow;
-            mappedDto.UpdatedBy = HttpContextHelper.UserId;
 
             await this.unitOfWork.SaveChangesAsync();
 
