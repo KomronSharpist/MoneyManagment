@@ -62,6 +62,50 @@ public class UserController : Controller
             return RedirectToAction("Index", "Home");
         }
     }
+    public async Task<IActionResult> TransactionChose(int selectedOption)
+    {
+        try
+        {
+            var json = Request.Cookies["userId"];
+            long userId = JsonConvert.DeserializeObject<long>(json);
+
+            if (userId == 0)
+                return RedirectToAction("Index", "Home");
+
+            if(selectedOption == 0)
+                return RedirectToAction("Index", "User");
+            
+            var pagination = new PaginationParams()
+            {
+                PageIndex = 1,
+                PageSize = 100
+            };
+            var result = await this.transactionService.RetrieveMothlyByUserIdAsync(pagination, userId);
+            var secondResult = await this.transactionService.RetrieveAllAsync(pagination);
+            var thirdResult = await this.transactionCategoryService.RetrieveAllAsync(pagination);
+            var newList = new List<TransactionResultDto>();
+            foreach (var item in secondResult)
+                if (item.UserId == userId)
+                    newList.Add(item);
+            var fourResult = new TransactionCreationDto();
+            var user = await this.userService.RetrieveByIdAsync(userId);
+            var res = new TotalAndTransaction()
+            {
+                TotalResultDto = result,
+                TransactionResults = newList,
+                TransactionCategoryResultDto = thirdResult,
+                TransactionCreationDto = fourResult,
+            };
+            if (user.Role == Roles.User)
+                return RedirectToAction("Index",res);
+
+            return RedirectToAction("Index", "Home");
+        }
+        catch
+        {
+            return RedirectToAction("Index", "Home");
+        }
+    }
     public async Task<IActionResult> Settings()
     {
         try
