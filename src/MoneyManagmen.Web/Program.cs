@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using MoneyManagment.Api.Extensions;
 using MoneyManagment.DAL.Contexts;
 using MoneyManagment.DAL.IRepositories;
 using MoneyManagment.DAL.Repositories;
@@ -25,6 +26,9 @@ builder.Services.AddDbContext<MoneyDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
+
+
+app.ApplyMigrations();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
