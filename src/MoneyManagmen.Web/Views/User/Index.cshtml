@@ -78,10 +78,15 @@
     <div class="home-tokens-inner"></div>
     <div class="history">History</div>
     <div class="chevron-down-1-wrapper">
-        <select class="form-select" aria-label="Default select example">
-            <option selected>All</option>
-            <option value="1">Monthly</option>
-        </select>
+        <form method="post" asp-action="TransactionChose" asp-controller="User">
+            <div class="form-group">
+                <select name="selectedOption" class="form-select" aria-label="Default select example">
+                    <option value="0" selected>All</option>
+                    <option value="1">Monthly</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
     </div>
     <button type="button" class="btn btn-warning button-add" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">
         Add
