@@ -1,0 +1,51 @@
+﻿@using MoneyManagment.Domain.Enums;
+@using MoneyManagment.Service.DTOs.Transactions;
+@{
+    Layout = "_adminLayout";
+}
+@model List<TransactionResultDto>
+
+
+<h1 class="text-center ">Transactions</h1>
+
+<div class="container pt-5 container-fluid d-flex  flex-wrap">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Transaction Type</th>
+                <th scope="col">Description</th>
+                <th scope="col">CategoryId</th>
+                <th scope="col">UserId</th>
+                <th scope="col">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                if(product.TransactionType == TransactionType.income)
+                {
+                    <tr class="table-success">
+                        <th scope="row">@product.Id</th>
+                        <td>@product.TransactionType</td>
+                        <td>@product.Description</td>
+                        <td>@product.CategoryId</td>
+                        <td>@product.UserId</td>
+                        <td>@product.CreatedAt</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr class="table-danger">
+                        <th scope="row">@product.Id</th>
+                        <td>@product.TransactionType</td>
+                        <td>@product.Description</td>
+                        <td>@product.CategoryId</td>
+                        <td>@product.UserId</td>
+                        <td>@product.CreatedAt</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

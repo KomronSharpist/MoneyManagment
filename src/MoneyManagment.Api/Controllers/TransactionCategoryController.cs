@@ -9,61 +9,61 @@ namespace MoneyManagment.Api.Controllers;
 
 public class TransactionCategoryController : BaseController
 {
-    private readonly ITransactionCategoryService transactionCategoryService;
+    //private readonly ITransactionCategoryService transactionCategoryService;
 
-    public TransactionCategoryController(ITransactionCategoryService transactionCategoryService)
-    {
-        this.transactionCategoryService = transactionCategoryService;
-    }
-    // Create, Update, Delete, RetrieveById , Retrieve ALl
+    //public TransactionCategoryController(ITransactionCategoryService transactionCategoryService)
+    //{
+    //    this.transactionCategoryService = transactionCategoryService;
+    //}
+    //// Create, Update, Delete, RetrieveById , Retrieve ALl
 
-    [HttpPost]
-    [Authorize("admin")]
-    public async Task<IActionResult> Post(TransactionCategoryCreationDto dto)
-        => Ok(new Response
-        {
-            Code = 200,
-            Error = "Success",
-            Data = await this.transactionCategoryService.AddAsync(dto)
-        });
+    //[HttpPost]
+    //[Authorize("admin")]
+    //public async Task<IActionResult> Post(TransactionCategoryCreationDto dto)
+    //    => Ok(new Response
+    //    {
+    //        Code = 200,
+    //        Error = "Success",
+    //        Data = await this.transactionCategoryService.AddAsync(dto)
+    //    });
 
-    [HttpPut]
-    [Authorize("admin")]
-    public async Task<IActionResult> Put([FromBody] TransactionCategoryCreationDto dto, long id)
-        => Ok(new Response
-        {
-            Code = 200,
-            Error = "Success",
-            Data = await this.transactionCategoryService.UpdateAsync(dto, id)
-        });
+    //[HttpPut]
+    //[Authorize("admin")]
+    //public async Task<IActionResult> Put([FromBody] TransactionCategoryCreationDto dto, long id)
+    //    => Ok(new Response
+    //    {
+    //        Code = 200,
+    //        Error = "Success",
+    //        Data = await this.transactionCategoryService.UpdateAsync(dto, id)
+    //    });
 
-    [HttpDelete("{id:long}")]
-    [Authorize("admin")]
-    public async Task<IActionResult> Delete(long id)
-        => Ok(new Response
-        {
-            Code = 200,
-            Error = "Success",
-            Data = await this.transactionCategoryService.DeleteAsync(id)
-        });
+    //[HttpDelete("{id:long}")]
+    //[Authorize("admin")]
+    //public async Task<IActionResult> Delete(long id)
+    //    => Ok(new Response
+    //    {
+    //        Code = 200,
+    //        Error = "Success",
+    //        Data = await this.transactionCategoryService.DeleteAsync(id)
+    //    });
 
-    [HttpGet("by-id/{id:long}")]
-    [Authorize("allow")]
-    public async Task<IActionResult> GetById(long id)
-        => Ok(new Response
-        {
-            Code = 200,
-            Error = "Success",
-            Data = await this.transactionCategoryService.RetrieveByIdAsync(id)
-        });
+    //[HttpGet("by-id/{id:long}")]
+    //[Authorize("allow")]
+    //public async Task<IActionResult> GetById(long id)
+    //    => Ok(new Response
+    //    {
+    //        Code = 200,
+    //        Error = "Success",
+    //        Data = await this.transactionCategoryService.RetrieveByIdAsync(id)
+    //    });
 
-    [HttpGet("list")]
-    [Authorize("allow")]
-    public async Task<IActionResult> GetAll([FromQuery] PaginationParams @params)
-       => Ok(new Response
-       {
-           Code = 200,
-           Error = "Success",
-           Data = await this.transactionCategoryService.RetrieveAllAsync(@params)
-       });
+    //[HttpGet("list")]
+    //[Authorize("allow")]
+    //public async Task<IActionResult> GetAll([FromQuery] PaginationParams @params)
+    //   => Ok(new Response
+    //   {
+    //       Code = 200,
+    //       Error = "Success",
+    //       Data = await this.transactionCategoryService.RetrieveAllAsync(@params)
+    //   });
 }

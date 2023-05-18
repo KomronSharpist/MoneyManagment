@@ -60,7 +60,7 @@ public class MoneyDbContext : DbContext
                     DeletedBy = null, 
                     ImagePath = "wwwroot\\\\uploads\\\\images\\\\3d89777ec7f74a00b77e97397fce10e6.jpg", 
                     IsVerify = true, 
-                    Role = Domain.Enums.Roles.Admin, 
+                    Role = Domain.Enums.Roles.User, 
                     Salt = "27ffbd0d-569d-4e1c-bb6b-48b846463982", 
                     IsDeleted = false, 
                     UpdatedAt = null, 
