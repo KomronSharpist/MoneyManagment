@@ -177,13 +177,13 @@ public class UserService : IUserService
         return this.mapper.Map<UserResultDto>(user);
     }
 
-    public async ValueTask<UserResultDto> UpdateAsync(UserCreationDto dto)
+    public async ValueTask<UserResultDto> UpdateAsync(UserCreationDto dto, long id, long userid = 0)
     {
-        var exist = await this.unitOfWork.Users.SelectAsync(u => u.Email.Equals(dto.Email));
+        var exist = await this.unitOfWork.Users.SelectAsync(u => u.Id.Equals(id));
         if (exist is null || exist.IsDeleted)
             throw new MoneyException(404, "User is not found with this email");
 
-        if (!PasswordHelper.Verify(dto.Password, exist.Salt, exist.Password))
+        if (userid == 0 && !PasswordHelper.Verify(dto.Password, exist.Salt, exist.Password))
             throw new MoneyException(401, "Your password is wrong for update your profile");
 
         var newDto = this.mapper.Map(dto, exist);

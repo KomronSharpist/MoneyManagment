@@ -6,7 +6,7 @@ namespace MoneyManagment.Service.Interfaces;
 public interface IUserService
 {
     ValueTask<bool> AddAsync(UserCreationDto dto);
-    ValueTask<UserResultDto> UpdateAsync(UserCreationDto dto);
+    ValueTask<UserResultDto> UpdateAsync(UserCreationDto dto, long id, long userid = 0);
     ValueTask<bool> DeleteAsync(long id);
     ValueTask<UserResultDto> RetrieveMeAsync();
     ValueTask<UserResultDto> RetrieveByIdAsync(long id);

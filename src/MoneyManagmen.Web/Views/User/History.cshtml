@@ -16,8 +16,10 @@
                 <th scope="col">Id</th>
                 <th scope="col">Transaction Type</th>
                 <th scope="col">Description</th>
+                <th scope="col">Sum</th>
                 <th scope="col">Category Id</th>
                 <th scope="col">Date</th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -29,8 +31,12 @@
                         <th scope="row">@product.Id</th>
                         <td>@product.TransactionType</td>
                         <td>@product.Description</td>
+                        <td>$@product.Sum</td>
                         <td>@product.CategoryId</td>
                         <td>@product.CreatedAt</td>
+                        <td>
+                            <a href="@Url.Action("TransactionDelete", "User" , new {Id = product.Id})" class="btn btn-danger">Delete</a>
+                        </td>
                     </tr>
                 }
                 else
@@ -39,8 +45,12 @@
                         <th scope="row">@product.Id</th>
                         <td>@product.TransactionType</td>
                         <td>@product.Description</td>
+                        <td>$@product.Sum</td>
                         <td>@product.CategoryId</td>
                         <td>@product.CreatedAt</td>
+                        <td>
+                            <a href="@Url.Action("TransactionDelete", "User" , new {Id = product.Id})" class="btn btn-danger">Delete</a>
+                        </td>
                     </tr>
                 }
             }

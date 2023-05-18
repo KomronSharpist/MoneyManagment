@@ -26,7 +26,12 @@ namespace MoneyManagment.Service.Services
             if (dto.TransactionType != Domain.Enums.TransactionType.income && dto.TransactionType != Domain.Enums.TransactionType.outgo)
                 throw new MoneyException(400, "Type is wrong: income = 0, outgo = 1");
             var category = await this.unitOfWork.TransactionCategories.SelectAsync(c => c.Name.Equals(dto.Name));
-            if (category is not null)
+            if(category is not null && category.IsDeleted)
+            {
+                category.IsDeleted = false;
+                category.TransactionType = dto.TransactionType;
+            }
+            if (category is not null && !category.IsDeleted)
                 throw new MoneyException(405, "Category is already exist");
 
             var mappedDto = this.mapper.Map<TransactionCategory>(dto);
@@ -62,6 +67,15 @@ namespace MoneyManagment.Service.Services
         public async ValueTask<TransactionCategoryResultDto> RetrieveByIdAsync(long id)
         {
             var category = await this.unitOfWork.TransactionCategories.SelectAsync(c => c.Id.Equals(id));
+            if (category is null || category.IsDeleted)
+                throw new MoneyException(404, "Category is not found");
+
+            return this.mapper.Map<TransactionCategoryResultDto>(category);
+        }
+
+        public async ValueTask<TransactionCategoryResultDto> RetrieveByNameAsync(string name)
+        {
+            var category = await this.unitOfWork.TransactionCategories.SelectAsync(c => c.Name.Equals(name));
             if (category is null || category.IsDeleted)
                 throw new MoneyException(404, "Category is not found");
 

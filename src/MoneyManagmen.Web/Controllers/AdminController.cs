@@ -37,6 +37,7 @@ public class AdminController : Controller
             var result = await this.userService.RetrieveByIdAsync(userId);
             if(result.Role == Roles.Admin)
             {
+                var user = new UserResultDto();
                 var pagination = new PaginationParams()
                 {
                     PageIndex = 1,
@@ -46,6 +47,7 @@ public class AdminController : Controller
                 var newModel = new UserResAndCreate()
                 {
                     Results = users,
+                    Result = user
                 };
                 return View(newModel);
             }
@@ -65,7 +67,13 @@ public class AdminController : Controller
             var userId = JsonConvert.DeserializeObject<long>(id);
             var user = await this.userService.RetrieveByIdAsync(userId);
             if (user.Role == Roles.Admin)
-                return View(user);
+            {
+                var result = new UserCreateAndResForUser()
+                {
+                    Result = user
+                };
+                return View(result);
+            }
 
             return RedirectToAction("Index", "Home");
         }
@@ -134,33 +142,6 @@ public class AdminController : Controller
             return RedirectToAction("Index", "Admin");
         }
     }
-    public async Task<IActionResult> Update(UserCreationDto dto)
-    {
-        try
-        {
-            var uid = Request.Cookies["userId"];
-            var userId = JsonConvert.DeserializeObject<long>(uid);
-            var user = await this.userService.RetrieveByIdAsync(userId);
-            if (user.Role == Roles.Admin)
-            {
-                var userForUpdate = await this.userService.RetrieveByEmailAsync(dto.Email);
-                if (dto.FirstName == null)
-                    dto.FirstName = userForUpdate.FirstName;
-                if (dto.LastName == null)
-                    dto.LastName = userForUpdate.LastName;
-                if (dto.Email == null)
-                    dto.Email = userForUpdate.Email;
-                var result = await this.userService.UpdateAsync(dto);
-                return RedirectToAction("Index", "Admin");
-            }
-
-            return RedirectToAction("Index", "Home");
-        }
-        catch
-        {
-            return RedirectToAction("Index", "Admin");
-        }
-    }
     public async Task<IActionResult> Transactions()
     {
         var json = Request.Cookies["role"];
@@ -178,6 +159,52 @@ public class AdminController : Controller
 
         return RedirectToAction("Index", "Admin");
     }
+    public async Task<IActionResult> UserUpdate(UserCreateAndResForUser dto)
+    {
+        try
+        {
+            var json = Request.Cookies["userId"];
+            var id = JsonConvert.DeserializeObject<long>(json);
+            var user = await this.userService.RetrieveByIdAsync(id);
+            if (user.Role == Roles.Admin)
+            {
+                var result = await this.userService.UpdateAsync(dto.Creation, dto.Result.Id);
+                return RedirectToAction("Settings", "Admin");
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+        catch (Exception ex)
+        {
+            return View(ex.Message);
+        }
+    }
+    public async Task<IActionResult> UsersUpdate(int id, string firstName, string lastName, string email)
+    {
+        try
+        {
+            var json = Request.Cookies["userId"];
+            var userId = JsonConvert.DeserializeObject<long>(json);
+            var user = await this.userService.RetrieveByIdAsync(userId);
+            if (user.Role == Roles.Admin)
+            {
+                var userForUpdate = new UserCreationDto()
+                {
+                    Email = email,
+                    FirstName = firstName,
+                    LastName = lastName,
+                };
+                var result = await this.userService.UpdateAsync(userForUpdate, id, userId);
+                return RedirectToAction("Index", "Admin");
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+        catch (Exception ex)
+        {
+            return View(ex.Message);
+        }
+    }
     public async Task<IActionResult> CategoryCreate(TransactionCreateAndResult dto)
     {
         var json = Request.Cookies["role"];
@@ -185,6 +212,19 @@ public class AdminController : Controller
         if (role == Convert.ToString(Roles.Admin))
         {
             var transactions = await this.transactionCategoryService.AddAsync(dto.CreationDto);
+            return RedirectToAction("TransactionCategories", "Admin");
+        }
+
+        return RedirectToAction("Index", "Admin");
+    }
+    public async Task<IActionResult> CategoryUpdate(TransactionCreateAndResult dto, string oldName)
+    {
+        var json = Request.Cookies["role"];
+        var role = JsonConvert.DeserializeObject<string>(json);
+        if (role == Convert.ToString(Roles.Admin))
+        {
+            var category = await this.transactionCategoryService.RetrieveByNameAsync(oldName);
+            var transactions = await this.transactionCategoryService.UpdateAsync(dto.CreationDto,category.Id);
             return RedirectToAction("TransactionCategories", "Admin");
         }
 

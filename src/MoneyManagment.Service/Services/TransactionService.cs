@@ -41,14 +41,7 @@ public class TransactionService : ITransactionService
         if (transaction is null || transaction.IsDeleted)
             throw new MoneyException(404, "Transaction is not found");
 
-        if (HttpContextHelper.UserRole == Convert.ToString(Roles.Admin))
-            await this.unitOfWork.Transactions.DeleteAsync(t => t.Id.Equals(id));
-
-        else if (HttpContextHelper.UserRole == Convert.ToString(Roles.User) && transaction.UserId == HttpContextHelper.UserId)
-            await this.unitOfWork.Transactions.DeleteAsync(t => t.Id.Equals(id));
-        else
-            throw new MoneyException(403, "You don't have authorize for this");
-
+        await this.unitOfWork.Transactions.DeleteAsync(t => t.Id.Equals(id));
         await this.unitOfWork.SaveChangesAsync();
 
         return true;
@@ -60,8 +53,10 @@ public class TransactionService : ITransactionService
             .Where(t => t.IsDeleted == false)
             .ToPagedList(@params)
             .ToListAsync();
-
-        return this.mapper.Map<List<TransactionResultDto>>(transactions);
+        var result = this.mapper.Map<List<TransactionResultDto>>(transactions);
+        for (int i = 0; i < result.Count(); i++)
+            result[i].CategoryId = transactions[i].TransactionCategoryId;
+        return result;
     }
 
     public async ValueTask<TransactionTotalResultDto> RetrieveAllByMeAsync(PaginationParams @params, long userId)

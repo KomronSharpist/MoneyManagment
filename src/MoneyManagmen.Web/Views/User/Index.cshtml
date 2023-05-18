@@ -1,4 +1,5 @@
-﻿@using MoneyManagment.Service.DTOs.Transactions;
+﻿@using MoneyManagment.Domain.Enums;
+@using MoneyManagment.Service.DTOs.Transactions;
 @{
     Layout = "_Layout";
 }
@@ -22,7 +23,56 @@
         </div>
     </div>
 
-    <div class="home-tokens-child"></div>
+    <div class="home-tokens-child">
+        <div class="container-fluid d-flex  flex-wrap" style="padding-top: 150px;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Transaction Type</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Sum</th>
+                        <th scope="col">CategoryId</th>
+                        <th scope="col">Date</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.TransactionResults)
+                    {
+                        if (product.TransactionType == TransactionType.income)
+                        {
+                            <tr class="table-success">
+                                <th scope="row">@product.Id</th>
+                                <td>@product.TransactionType</td>
+                                <td>@product.Description</td>
+                                <td>$@product.Sum</td>
+                                <td>@product.CategoryId</td>
+                                <td>@product.CreatedAt.ToShortDateString()</td>
+                                <td>
+                                    <a href="@Url.Action("TransactionDelete", "User" , new {Id = product.Id})" class="btn btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr class="table-danger">
+                                <th scope="row">@product.Id</th>
+                                <td>@product.TransactionType</td>
+                                <td>@product.Description</td>
+                                <td>$@product.Sum</td>
+                                <td>@product.CategoryId</td>
+                                <td>@product.CreatedAt.ToShortDateString()</td>
+                                <td>
+                                    <a href="@Url.Action("TransactionDelete", "User" , new {Id = product.Id})" class="btn btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
     <img class="home-tokens-item" alt="" src="./public/rectangle-5.svg" />
 
     <div class="home-tokens-inner"></div>
@@ -33,9 +83,73 @@
             <option value="1">Monthly</option>
         </select>
     </div>
+    <button type="button" class="btn btn-warning button-add" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">
+        Add
+    </button>
+    <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" asp-controller="User" asp-action="TransactionCreate" enctype="multipart/form-data">
+                        <div class="form sign-up">
+                            <div class="input-group">
+                                <input class="form-control" type="number" asp-for="@Model.TransactionCreationDto.Sum" name="Sum" placeholder="Sum">
+                            </div>
+                            <div class="input-group">
+                                <input type="text" asp-for="@Model.TransactionCreationDto.Description" name="Description" placeholder="Description">
+                            </div>
+                            <div class="input-group">
+                                <input type="datetime" asp-for="@Model.TransactionCreationDto.CreatedAt" name="Created date" placeholder="Created date">
+                            </div>
+                            <div class="input-group">
+                                <select asp-for="@Model.TransactionCreationDto.TransactionType" class="form-select" name="TransactionType" aria-label="Default select example">
+                                    <option selected>Chose transaction type</option>
+                                    <option value="0">income</option>
+                                    <option value="1">outgo</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <select name="categoryId" asp-for="@Model.TransactionCreationDto.CategoryId" class="form-select" aria-label="Default select example">
+                                    <option selected>Chose transaction type</option>
+                                    @foreach (var item in Model.TransactionCategoryResultDto)
+                                    {
+                                        if(item.TransactionType == TransactionType.income)
+                                        {
+                                            <option asp-for="@Model.TransactionCreationDto.CategoryId" style="background-color: limegreen" value="@item.Id">@item.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option asp-for="@Model.TransactionCreationDto.CategoryId" style="background-color: red" value="@item.Id">@item.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-*@
+
 <style>
+    .input-group input {
+        width: 100%;
+        padding: 1rem 3rem;
+        font-size: 1rem;
+        background-color: #fff;
+        border-radius: 0.5rem;
+        border: 0px solid gray;
+        outline: none;
+    }
     :root {
         --font-urbanist: Urbanist;
         --font-size-xs: 12px;
@@ -257,6 +371,26 @@
         justify-content: center;
     }
 
+    .button-add{
+        position: absolute;
+        justify-content: center;
+        text-align: center;
+        align-items: center;
+        top: 60px;
+        left: 875px;
+        color: #fff;
+        border-radius: var(--br-31xl);
+        border: none;
+        background-color: var(--color-darkslategray);
+        width: 202px;
+        height: 36px;
+        display: flex;
+        flex-direction: row;
+        padding: var(--padding-9xs) 16px var(--padding-9xs) 97px;
+        box-sizing: border-box;
+        align-items: center;
+        justify-content: center;
+    }
     .home-tokens {
         position: relative;
         background-color: #7290FF;
