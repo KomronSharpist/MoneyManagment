@@ -108,7 +108,7 @@
                                 <input type="text" asp-for="@Model.TransactionCreationDto.Description" name="Description" placeholder="Description">
                             </div>
                             <div class="input-group">
-                                <input type="datetime" asp-for="@Model.TransactionCreationDto.CreatedAt" name="Created date" placeholder="Created date">
+                                <input type="date" asp-for="@Model.TransactionCreationDto.CreatedAt" name="CreatedAt" placeholder="Created date">
                             </div>
                             <div class="input-group">
                                 <select asp-for="@Model.TransactionCreationDto.TransactionType" class="form-select" name="TransactionType" aria-label="Default select example">
@@ -241,13 +241,13 @@
     }
 
     .home-tokens-child {
-        position: absolute;
-        top: calc(50% - 66px);
-        left: calc(50% - 528px);
+        margin-top: 340px;
+        margin-left: 60px;
         border-radius: 80px;
         background-color: var(--color-white);
         width: 1060px;
-        height: 552px;
+        height: auto;
+        padding-bottom: 50px;
     }
 
     .home-tokens-inner,
@@ -301,8 +301,9 @@
     }
 
     .vector-parent {
+        left :-30px; 
         position: relative;
-        width: 54.38px;
+        width: 110.38px;
         height: 14px;
     }
 
@@ -400,7 +401,6 @@
         position: relative;
         background-color: #7290FF;
         width: 100%;     
-        height: 812px;
         overflow: hidden;
         text-align: center;
         font-size: var(--font-size-sm);
