@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MoneyManagmen.Web.Models;
 using MoneyManagment.Domain.Configurations;
+using MoneyManagment.Domain.Entities;
 using MoneyManagment.Domain.Enums;
 using MoneyManagment.Service.DTOs.Transactions;
 using MoneyManagment.Service.Interfaces;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Globalization;
+using System.Text;
 
 namespace MoneyManagmen.Web.Controllers;
 
@@ -23,43 +27,52 @@ public class UserController : Controller
 
     public async Task<IActionResult> Index()
     {
-        try
+        if (TempData.TryGetValue("Data", out var serializedData) && serializedData is string dataString)
         {
-            var json = Request.Cookies["userId"];
-            long userId = JsonConvert.DeserializeObject<long>(json);
-
-            if (userId == 0)
-                return RedirectToAction("Index", "Home");
-
-            var pagination = new PaginationParams()
-            {
-                PageIndex = 1,
-                PageSize = 100
-            };
-            var result = await this.transactionService.RetrieveAllByUserIdAsync(pagination,userId);
-            var secondResult = await this.transactionService.RetrieveAllAsync(pagination);
-            var thirdResult = await this.transactionCategoryService.RetrieveAllAsync(pagination);
-            var newList = new List<TransactionResultDto>();
-            foreach (var item in secondResult)
-                if(item.UserId == userId)
-                    newList.Add(item);
-            var fourResult = new TransactionCreationDto();
-            var user = await this.userService.RetrieveByIdAsync(userId);
-            var res = new TotalAndTransaction()
-            {
-                TotalResultDto = result,
-                TransactionResults = newList,
-                TransactionCategoryResultDto = thirdResult,
-                TransactionCreationDto = fourResult,
-            };
-            if (user.Role == Roles.User)
-                return View(res);
-
-            return RedirectToAction("Index", "Home");
+            var totalAndTransaction = JsonConvert.DeserializeObject<TotalAndTransaction>(dataString);
+            return View(totalAndTransaction);
         }
-        catch
+        else
         {
-            return RedirectToAction("Index", "Home");
+
+            try
+            {
+                var json = Request.Cookies["userId"];
+                long userId = JsonConvert.DeserializeObject<long>(json);
+
+                if (userId == 0)
+                    return RedirectToAction("Index", "Home");
+
+                var pagination = new PaginationParams()
+                {
+                    PageIndex = 1,
+                    PageSize = 100
+                };
+                var result = await this.transactionService.RetrieveAllByUserIdAsync(pagination,userId);
+                var secondResult = await this.transactionService.RetrieveAllAsync(pagination);
+                var thirdResult = await this.transactionCategoryService.RetrieveAllAsync(pagination);
+                var newList = new List<TransactionResultDto>();
+                foreach (var item in secondResult)
+                    if(item.UserId == userId)
+                        newList.Add(item);
+                var fourResult = new TransactionCreationDto();
+                var user = await this.userService.RetrieveByIdAsync(userId);
+                var res = new TotalAndTransaction()
+                {
+                    TotalResultDto = result,
+                    TransactionResults = newList.OrderByDescending(item => item.CreatedAt).ToList(),
+                    TransactionCategoryResultDto = thirdResult,
+                    TransactionCreationDto = fourResult,
+                };
+                if (user.Role == Roles.User)
+                    return View(res);
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
     }
     public async Task<IActionResult> TransactionChose(int selectedOption)
@@ -85,19 +98,23 @@ public class UserController : Controller
             var thirdResult = await this.transactionCategoryService.RetrieveAllAsync(pagination);
             var newList = new List<TransactionResultDto>();
             foreach (var item in secondResult)
-                if (item.UserId == userId)
+                if (item.UserId == userId && item.CreatedAt.Month == DateTime.Now.Month && item.CreatedAt.Year == DateTime.Now.Year)
                     newList.Add(item);
             var fourResult = new TransactionCreationDto();
             var user = await this.userService.RetrieveByIdAsync(userId);
-            var res = new TotalAndTransaction()
+            var data = new TotalAndTransaction()
             {
                 TotalResultDto = result,
-                TransactionResults = newList,
+                TransactionResults = newList.OrderByDescending(item => item.CreatedAt).ToList(),
                 TransactionCategoryResultDto = thirdResult,
                 TransactionCreationDto = fourResult,
             };
             if (user.Role == Roles.User)
-                return RedirectToAction("Index",res);
+            {
+                string serializedData = JsonConvert.SerializeObject(data);
+                TempData["Data"] = serializedData;
+                return RedirectToAction("Index", "User");
+            }
 
             return RedirectToAction("Index", "Home");
         }
@@ -189,6 +206,9 @@ public class UserController : Controller
     {
         try
         {
+            var initialDate = DateTime.ParseExact(Convert.ToString(dto.CreatedAt), "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+            var updatedDateTime = new DateTime(initialDate.Year, initialDate.Month, initialDate.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+            dto.CreatedAt = updatedDateTime.ToUniversalTime();
             var json = Request.Cookies["userId"];
             var id = JsonConvert.DeserializeObject<long>(json);
             var user = await this.userService.RetrieveByIdAsync(id);
